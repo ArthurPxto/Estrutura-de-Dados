@@ -62,7 +62,6 @@ void ImprimirPosOrdem(arvore *a) {
 
 int menu() {
 
-    system("cls");
 
     int opc;
 
@@ -95,7 +94,8 @@ int Busca(arvore *a, int x) {
    }
 }  
 
-int ContarElementos(arvore *a, int *n) {
+void ContarElementos(arvore *a, int n) {
+
     if(a != NULL)
     {
         ContarElementos(a->esq, n);
@@ -122,7 +122,7 @@ void ImprimirNosFolhas(arvore *a) {
 
 int main ()
 {
-    int opc, ordem, info, *n = 0;
+    int opc, ordem, info, n = 0;
 
     arvore *a = NULL;
 
@@ -136,17 +136,24 @@ int main ()
             
             arq = fopen("entrada.txt", "r");
 
+            if(arq == NULL)
+            {
+                printf("\n 0 \n");
+
+            }
+
             a = LerArvore(arq);
 
             fclose(arq);
 
+            printf(" \narquivo lido com sucesso \n");
             
             break;
         case 2:
                printf("1) pre-ordem \n"); 
                printf("2) ordem \n"); 
                printf("3) pos-ordem \n"); 
-               printf("selecione a ordem da arvore\n"); 
+               printf("selecione a ordem da arvore: "); 
                scanf("%d", &ordem);
                
                switch (ordem)
@@ -155,20 +162,24 @@ int main ()
 
                 ImprimirPreOrdem(a);
 
+
                 break;
                case 2:
 
                 ImprimirOrdem(a);
+
                
                 break;
                case 3:
                 
                 ImprimirPosOrdem(a);
 
+
                 break;
                
                default:
                     printf("opcao invalida! \n");
+                    getchar();
                 break;
                }
 
@@ -194,19 +205,13 @@ int main ()
             
             ContarElementos(a, n);
             
-            if(*n > 0){
-                printf("Existem %d elementos nessa arvore", *n);
-            }
-            else{
-                printf("a arvore e nula");
-            }
+            printf("Existem %d elementos nessa arvore", n);
 
             break;
         case 5:
             system("cls");
 
             ImprimirNosFolhas(a);
-
            break;
         case 6:
 
