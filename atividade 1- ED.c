@@ -94,14 +94,18 @@ int Busca(arvore *a, int x) {
    }
 }  
 
-void ContarElementos(arvore *a, int n) {
+int ContarElementos(arvore *a, int *n) {
+
 
     if(a != NULL)
     {
+
         ContarElementos(a->esq, n);
-        n++;
+        *n = *n + 1;
         ContarElementos(a->dir, n);
     } 
+
+    return *n;
 }
 
 void ImprimirNosFolhas(arvore *a) {
@@ -110,7 +114,7 @@ void ImprimirNosFolhas(arvore *a) {
     // verifica se a->esq e a-> direita e nulo
     // se forem nulos ele printa
         if(a->esq == NULL && a->dir == NULL){
-        printf("\n [%d]", a->info);
+        printf(" [%d]", a->info);
         }
         else{
         ImprimirNosFolhas(a->esq);
@@ -122,7 +126,7 @@ void ImprimirNosFolhas(arvore *a) {
 
 int main ()
 {
-    int opc, ordem, info, n = 0;
+    int opc, ordem, info, n = 0, *p;
 
     arvore *a = NULL;
 
@@ -179,15 +183,12 @@ int main ()
                
                default:
                     printf("opcao invalida! \n");
-                    getchar();
                 break;
                }
 
 
             break;
         case 3:
-
-            system("cls");
 
             printf(" \n Qual elemento deseja buscar? ");
             scanf("%d", &info);
@@ -202,16 +203,18 @@ int main ()
 
             break;
         case 4:
+
+            p = &n;
             
-            ContarElementos(a, n);
+            n = ContarElementos(a, p);
             
             printf("Existem %d elementos nessa arvore", n);
 
             break;
         case 5:
-            system("cls");
 
             ImprimirNosFolhas(a);
+
            break;
         case 6:
 
