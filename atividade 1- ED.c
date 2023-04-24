@@ -45,17 +45,17 @@ void ImprimirPreOrdem(arvore *a) {
 
 void ImprimirOrdem(arvore *a) {
    if (a != NULL) {      
-      ImprimirPreOrdem(a->esq);
+      ImprimirOrdem(a->esq);
       printf("%d ", a->info);
-      ImprimirPreOrdem(a->dir);
+      ImprimirOrdem(a->dir);
    }
 }
 
 void ImprimirPosOrdem(arvore *a) {
 
    if (a != NULL) {      
-      ImprimirPreOrdem(a->esq);
-      ImprimirPreOrdem(a->dir);
+      ImprimirPosOrdem(a->esq);
+      ImprimirPosOrdem(a->dir);
       printf("%d ", a->info);
    }
 }
@@ -143,12 +143,15 @@ int altura(arvore *a) {
    }
 }
 
-void ImprimirLargura(arvore *a){
+void ImprimirLargura(arvore *a, int noDesejado){
    if(a != NULL){
+      if (noDesejado == 0) {
       printf("[%d]", a ->info);
-   }
-
-
+      } else {
+         ImprimirLargura(a->esq, noDesejado - 1);
+         ImprimirLargura(a->dir, noDesejado - 1);
+      }
+   } 
 }
 
 void ArvoreBalaceada(arvore *a){
@@ -169,7 +172,7 @@ void ImprimirNivelNo(arvore *a){
 
 int main ()
 {
-    int opc, ordem, info, n = 0, *p;
+    int opc, ordem, info, n = 0, *p, noDesejado;
 
     arvore *a = NULL;
 
@@ -197,11 +200,11 @@ int main ()
             
             break;
         case 2:
-               printf("1) pre-ordem \n"); 
-               printf("2) ordem \n"); 
-               printf("3) pos-ordem \n"); 
-               printf("4) largura \n"); 
-               printf("selecione a ordem da arvore: "); 
+               printf("1) Pre-ordem \n"); 
+               printf("2) Ordem \n"); 
+               printf("3) Pos-ordem \n"); 
+               printf("4) Largura \n"); 
+               printf("Selecione a ordem da arvore: "); 
                scanf("%d", &ordem);
                
                switch (ordem)
@@ -226,8 +229,9 @@ int main ()
                 break;
                case 4:
 
-               
-                ImprimirLargura(a);
+               printf("Digite o nivel desejado:	");
+               scanf("%d", &noDesejado);
+                ImprimirLargura(a, noDesejado);
                
                 break;
                default:
