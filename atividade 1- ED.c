@@ -15,12 +15,22 @@ arvore *LerArvore(FILE *arq) {
    int num;
    
 
-   fscanf(arq,"%c",&c);
-   fscanf(arq,"%d",&num);
-   
-   if (num==-1) {
-      fscanf(arq,"%c",&c);
-      return NULL;
+    if (fscanf(arq,"%c",&c) == EOF || c != '(') {
+        printf("Erro: arquivo mal formatado. Falta um parenteses abrindo.\n");
+        return NULL;
+    }
+
+    if (fscanf(arq,"%d",&num) == EOF) {
+        printf("Erro: arquivo mal formatado. Falta o valor do nó.\n");
+        return NULL;
+    }
+
+    if (num==-1) {
+        if (fscanf(arq,"%c",&c) == EOF || c != ')') {
+            printf("Erro: arquivo mal formatado. Falta um parenteses fechando.\n");
+            return NULL;
+        }
+        return NULL;
    }
    else {
       a = (arvore*) malloc(sizeof(arvore));
@@ -29,7 +39,11 @@ arvore *LerArvore(FILE *arq) {
       a->esq = LerArvore(arq);
       a->dir = LerArvore(arq);
 
-      fscanf(arq,"%c",&c);
+      
+        if (fscanf(arq,"%c",&c) == EOF || c != ')') {
+            printf("Erro: arquivo mal formatado. Falta um parenteses fechando.\n");
+            return NULL;
+        }
       return a;
    }
 }
@@ -154,13 +168,37 @@ void ImprimirLargura(arvore *a, int noDesejado){
    } 
 }
 
-void ArvoreBalaceada(arvore *a){
+int ArvoreBalaceada(arvore *a){
+   if (a != NULL) {
+      int heightDireita, heightEsquerda;
+      heightDireita = altura(a->dir);
+      heightEsquerda = altura(a->esq);
+      if (heightDireita - heightEsquerda > 1 || heightEsquerda - heightDireita > 1) {
+         return 1;
+      } else {
+         ArvoreBalaceada(a->esq);
+         ArvoreBalaceada(a->dir);
+      }
 
 
+   } {
+      return 0;
+   }
 }
 
-void ArvoreCheia(arvore *a){
-
+int ArvoreCheia(arvore *a){
+   if (a != NULL) {
+      if (a->esq != NULL && a->dir != NULL) {
+         ArvoreCheia(a->esq);
+         ArvoreCheia(a->dir);
+      } else if (a->esq == NULL && a->dir == NULL) {
+         return 1;
+      } else {
+         return 0;
+      }
+   } else {
+      return 0;
+   }
 
 }
 
@@ -271,12 +309,24 @@ int main ()
            break;
         case 6:
 
-            ArvoreBalaceada(a);
+            if (ArvoreBalaceada(a) == 1)
+            {
+                printf("A arvore nao esta balanceada! \n");
+            }
+            else{
+                printf("A arvore esta balanceada! \n");
+            }
             
             break;
         case 7:
 
-            ArvoreCheia(a);
+            if (ArvoreCheia(a) == 1)
+            {
+                printf("A arvore nao esta cheia! \n");
+            }
+            else{
+                printf("A arvore esta cheia! \n");
+            }
             
             break;
         case 8:
