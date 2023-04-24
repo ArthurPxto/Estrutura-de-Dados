@@ -71,7 +71,10 @@ int menu() {
         printf("3) Buscar um elemento na arvore \n");
         printf("4) Contar o numero de elementos na arvore \n");
         printf("5) Imprimir as folhas das arvore \n");
-        printf("6) sair \n");
+        printf("6) Verificar se uma árvore está balanceada \n");
+        printf("7) Verificar se uma árvore é cheia \n");
+        printf("8) Imprimir o nível de um nó \n");
+        printf("9) Sair \n");
         printf("-------------------- \n");
         
         printf("\n Digite a opcao desejada: ");
@@ -182,15 +185,15 @@ int main ()
 
             if(arq == NULL)
             {
-                printf("\n 0 \n");
-
+                printf("\n !! Erro ao abrri o arquivo entrada.txt !! \n");
+                return 1;
             }
 
             a = LerArvore(arq);
 
             fclose(arq);
 
-            printf(" \narquivo lido com sucesso \n");
+            printf("\nSucesso: Arquivo lido! \n");
             
             break;
         case 2:
@@ -241,10 +244,10 @@ int main ()
 
             if(Busca(a , info) == 1)
             {
-                printf("\n elemento encontrado \n");
+                printf("\n Elemento encontrado! \n");
             }
             else{
-                printf("\n o elemento nao esta na arvore \n ");
+                printf("\n O elemento nao esta na arvore! \n ");
             }
 
             break;
