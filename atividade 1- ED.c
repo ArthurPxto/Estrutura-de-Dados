@@ -10,9 +10,9 @@
 } arvore;
 
 arvore *LerArvore(FILE *arq) {
+   arvore *a;
    char c;
    int num;
-   arvore *a;
    
 
    fscanf(arq,"%c",&c);
@@ -124,6 +124,46 @@ void ImprimirNosFolhas(arvore *a) {
    
 }
 
+int altura(arvore *a) {
+   
+   int hd, he;
+
+   if (a == NULL)
+      return 0;
+   else {
+      he = altura(a->esq);
+      hd = altura(a->dir);
+      if (he>hd) 
+         return he+1;
+      else
+         return hd+1;
+   }
+}
+
+void ImprimirLargura(arvore *a){
+   if(a != NULL){
+      printf("[%d]", a ->info);
+   }
+
+
+}
+
+void ArvoreBalaceada(arvore *a){
+
+
+}
+
+void ArvoreCheia(arvore *a){
+
+
+}
+
+void ImprimirNivelNo(arvore *a){
+
+
+}
+
+
 int main ()
 {
     int opc, ordem, info, n = 0, *p;
@@ -157,6 +197,7 @@ int main ()
                printf("1) pre-ordem \n"); 
                printf("2) ordem \n"); 
                printf("3) pos-ordem \n"); 
+               printf("4) largura \n"); 
                printf("selecione a ordem da arvore: "); 
                scanf("%d", &ordem);
                
@@ -180,7 +221,12 @@ int main ()
 
 
                 break;
+               case 4:
+
                
+                ImprimirLargura(a);
+               
+                break;
                default:
                     printf("opcao invalida! \n");
                 break;
@@ -218,6 +264,22 @@ int main ()
            break;
         case 6:
 
+            ArvoreBalaceada(a);
+            
+            break;
+        case 7:
+
+            ArvoreCheia(a);
+            
+            break;
+        case 8:
+
+            ImprimirNivelNo(a);
+            
+            break;
+        case 9:
+
+            
             return 0;
             
             break;
