@@ -63,7 +63,6 @@ void ImprimirOrdem(arvore *a) {
 }
 
 void ImprimirPosOrdem(arvore *a) {
-
   if (a != NULL) {
     ImprimirPosOrdem(a->esq);
     ImprimirPosOrdem(a->dir);
@@ -158,21 +157,22 @@ void ImprimirLargura(arvore *a, int noDesejado) {
     }
   }
 }
-// revisar função
-int ArvoreBalaceada(arvore *a) {
-  if (a != NULL) {
+
+int ArvoreBalaceada(arvore *a){
+
+   if (a != NULL){
     int heightDireita, heightEsquerda;
     heightDireita = altura(a->dir);
     heightEsquerda = altura(a->esq);
-    if (heightDireita - heightEsquerda > 1 ||heightEsquerda - heightDireita > 1) {
+    if (heightDireita - heightEsquerda > 1 ||heightEsquerda - heightDireita > 1){
       return 1;
     }
-    else {
+    else{
       ArvoreBalaceada(a->esq);
       ArvoreBalaceada(a->dir);
     }
-  } 
-  else
+   } 
+   else
    return 0;
 }
 
