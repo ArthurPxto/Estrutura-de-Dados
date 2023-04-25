@@ -75,14 +75,14 @@ int menu() {
   int opc;
 
   printf("\n------- Menu ------- \n");
-  printf("1) Ler uma Arvore \n");
-  printf("2) Imprimir a Arvore \n");
+  printf("1) Ler uma arvore \n");
+  printf("2) Imprimir a arvore \n");
   printf("3) Buscar um elemento na arvore \n");
   printf("4) Contar o numero de elementos na arvore \n");
   printf("5) Imprimir as folhas das arvore \n");
-  printf("6) Verificar se uma árvore está balanceada \n");
-  printf("7) Verificar se uma árvore é cheia \n");
-  printf("8) Imprimir o nível de um nó \n");
+  printf("6) Verificar se uma arvore esta balanceada \n");
+  printf("7) Verificar se uma arvore e cheia \n");
+  printf("8) Imprimir o nivel de um no \n");
   printf("9) Sair \n");
   printf("-------------------- \n");
 
@@ -157,7 +157,7 @@ void ImprimirLargura(arvore *a, int noDesejado) {
     }
   }
 }
-
+// revisar função
 int ArvoreBalaceada(arvore *a) {
   if (a != NULL) {
     int heightDireita, heightEsquerda;
@@ -173,23 +173,42 @@ int ArvoreBalaceada(arvore *a) {
   }
   { return 0; }
 }
-
+//revisar função
 int ArvoreCheia(arvore *a) {
   if (a != NULL) {
     if (a->esq != NULL && a->dir != NULL) {
       ArvoreCheia(a->esq);
       ArvoreCheia(a->dir);
-    } else if (a->esq == NULL && a->dir == NULL) {
+    } 
+    else if (a->esq == NULL && a->dir == NULL) {
       return 1;
-    } else {
+    }
+    else {
       return 0;
     }
-  } else {
+  } 
+  else {
     return 0;
   }
+  return 0;
 }
 
-void ImprimirNivelNo(arvore *a) {}
+void ImprimirNivelNo(arvore *a, int x,int nivel){
+
+    if(a != NULL){
+      if(a->info == x){
+        printf("\n nivel[%d]", nivel);
+      }
+      else{
+
+        ImprimirNivelNo(a->esq, x, nivel + 1);
+        ImprimirNivelNo(a->dir, x, nivel + 1);
+
+      }
+    }
+  
+
+}
 
 arvore *Libera(arvore *a) {
   if (a != NULL) {
@@ -310,7 +329,12 @@ int main() {
       break;
     case 8:
 
-      ImprimirNivelNo(a);
+      n = 0;
+
+      printf("Digite o o elemento desejado: ");
+      scanf("%d", &noDesejado);
+
+      ImprimirNivelNo(a , noDesejado, n);
 
       break;
     case 9:
