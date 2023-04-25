@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 // alunos: Arthur Peixoto / Emanuel Bravo;
 
@@ -163,34 +164,32 @@ int ArvoreBalaceada(arvore *a) {
     int heightDireita, heightEsquerda;
     heightDireita = altura(a->dir);
     heightEsquerda = altura(a->esq);
-    if (heightDireita - heightEsquerda > 1 ||
-        heightEsquerda - heightDireita > 1) {
-      return 1;
-    } else {
-      ArvoreBalaceada(a->esq);
-      ArvoreBalaceada(a->dir);
-    }
-  }
-  { return 0; }
-}
-//revisar função
-int ArvoreCheia(arvore *a) {
-  if (a != NULL) {
-    if (a->esq != NULL && a->dir != NULL) {
-      ArvoreCheia(a->esq);
-      ArvoreCheia(a->dir);
-    } 
-    else if (a->esq == NULL && a->dir == NULL) {
+    if (heightDireita - heightEsquerda > 1 ||heightEsquerda - heightDireita > 1) {
       return 1;
     }
     else {
-      return 0;
+      ArvoreBalaceada(a->esq);
+      ArvoreBalaceada(a->dir);
     }
   } 
-  else {
-    return 0;
-  }
-  return 0;
+  else
+   return 0;
+}
+
+int ArvoreCheia(arvore *a, int *n) {
+
+   int h = altura(a);
+
+   *n = ContarElementos(a, n);
+
+   printf("\n altura[%d] \n \n", h);
+   printf("\n elementos[%d] \n \n", *n);
+
+   if(*n == pow(2, h) - 1)
+     return 1;
+   else
+      return 0;
+
 }
 
 void ImprimirNivelNo(arvore *a, int x,int nivel){
@@ -220,7 +219,10 @@ arvore *Libera(arvore *a) {
 }
 
 int main() {
+
   int opc, ordem, info, n = 0, *p, noDesejado;
+
+  p = &n;
 
   arvore *a = NULL;
 
@@ -297,7 +299,6 @@ int main() {
       break;
     case 4:
 
-      p = &n;
 
       n = ContarElementos(a, p);
 
@@ -320,10 +321,10 @@ int main() {
       break;
     case 7:
 
-      if (ArvoreCheia(a) == 1) {
-        printf("A arvore nao esta cheia! \n");
-      } else {
+      if (ArvoreCheia(a, p) == 1) {
         printf("A arvore esta cheia! \n");
+      } else {
+        printf("A arvore nao esta cheia! \n");
       }
 
       break;
