@@ -83,36 +83,35 @@ void ImprimirLargura(arvore *a, int noDesejado) {
 
 //implementada busca em arvore binaria de busca
 int Busca(arvore *a, int x) {
-  if (a == NULL)
+  if (a == NULL){
     return 0;
+  }
   else {
-    if (a->info == x)
+    if (a->info == x){
       return 1;
-    else if (x < a->info)
+    }
+    else if(x < a->info){
       if(Busca(a->esq, x) == 1) 
       return 1;
-    else
+    }
+    else{
       return Busca(a->dir, x);
+    }
   }
 }
 
-// int ContarElementos(arvore *a, int *n) {
-//   if (a != NULL) {
-//     ContarElementos(a->esq, n);
-//     *n = *n + 1;
-//     ContarElementos(a->dir, n);
-//   }
-//   return *n;
-// }
-
-void ImprimirNosFolhas(arvore *a) {
+void ImprimirNosFolhasMenoresQueX(arvore *a, int x) {
 
   if (a != NULL) {
     if (a->esq == NULL && a->dir == NULL) {
       printf(" [%d]", a->info);
     } else {
-      ImprimirNosFolhas(a->esq);
-      ImprimirNosFolhas(a->dir);
+      if(a->info < x){
+        ImprimirNosFolhasMenoresQueX(a->dir, x);
+      }
+      else if(a->info > x){
+        ImprimirNosFolhasMenoresQueX(a->esq, x);
+      }
     }
   }
 }
@@ -153,7 +152,47 @@ arvore *InserirNo(arvore *a, int x) {
   return a;
 }
 
+//implementada remover em arvore binaria de busca
 arvore *RemoverNo(arvore* a, int x){
+  if(a != NULL){
+    if(x < a->info)
+      a->esq = RemoverNo(a->esq, x);
+    else if(x > a->info)
+      a->dir = RemoverNo(a->dir, x);
+    else{
+      //se for folha
+      if(a->esq == NULL && a->dir == NULL){
+        free(a);
+        a = NULL;
+        return a;
+      }
+      //se tiver um filho para a direita
+      else if(a->esq == NULL){
+        arvore *aux = a;
+        a = a->dir;
+        free(aux);
+        return a;
+      }
+      //se tiver um filho para a esquerda
+      else if(a->dir == NULL){
+        arvore *aux = a;
+        a = a->esq;
+        free(aux);
+        return a;
+      }
+      //se tiver dois filhos
+      else{
+        arvore *aux = a->esq;
+        while(aux->dir != NULL){
+          aux = aux->dir;
+        }
+        a->info = aux->info;
+        aux->info = x;
+        a->esq = RemoverNo(a->esq, x);
+        return a;
+      }
+    }
+  }
   
 }
 
@@ -189,9 +228,7 @@ int menu() {
 
 int main() {
 
-  int opc, n = 0, *p;
-
-  p = &n;
+  int opc, n = 0, info , valor, noDesejado , ordem;
 
   arvore *a = NULL;
 
@@ -219,8 +256,6 @@ int main() {
       break;
     case 2:
 
-      int ordem;
-
       printf("1) Pre-ordem \n");
       printf("2) Ordem \n");
       printf("3) Pos-ordem \n");
@@ -246,8 +281,6 @@ int main() {
         break;
       case 4:
 
-        int noDesejado;
-
         printf("Digite o nivel desejado:	");
         scanf("%d", &noDesejado);
         ImprimirLargura(a, noDesejado);
@@ -261,7 +294,6 @@ int main() {
       break;
     case 3:
 
-      int info;
 
       printf(" \n Qual elemento deseja buscar? ");
       scanf("%d", &info);
@@ -274,8 +306,6 @@ int main() {
 
       break;
     case 4:
-      
-      int n = 0, noDesejado;
 
       printf("Digite o o elemento desejado: ");
       scanf("%d", &noDesejado);
@@ -285,12 +315,13 @@ int main() {
       break;
     case 5://imprimir folhas menores que x
 
-      ImprimirNosFolhas(a);
+      printf("qual o filtro de impressao?");
+      scanf("%d", &valor);
+
+      ImprimirNosFolhasMenoresQueX(a, valor);
 
       break;
     case 6:// inserir no
-
-      int valor;
 
       printf("qual valor deseja inserir? ");
       scanf("%d", &valor);
@@ -300,6 +331,10 @@ int main() {
       break;
     case 7://remover no
 
+      printf("qual valor deseja remover? ");
+      scanf("%d", &valor);
+
+      a = RemoverNo(a, valor);
 
       break;
     case 8:
