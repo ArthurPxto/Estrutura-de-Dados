@@ -100,18 +100,36 @@ int Busca(arvore *a, int x) {
   }
 }
 
-void ImprimirNosFolhasMenoresQueX(arvore *a, int x) {
+// void ImprimirNosFolhasMenoresQueX(arvore *a, int x) {
 
+//   if (a != NULL) {
+//     if (a->esq == NULL && a->dir == NULL) {
+//       printf(" [%d]", a->info);
+//     } else {
+//       if(a->info < x){
+//         ImprimirNosFolhasMenoresQueX(a->dir, x);
+//       }
+//       else if(a->info > x){
+//         ImprimirNosFolhasMenoresQueX(a->esq, x);
+//       }
+//     }
+//   }
+// }
+
+void ImprimirNosFolhasMenoresQueX(arvore *a, int valor) {
+  // verifica se o nó atual é nulo
   if (a != NULL) {
+    // verifica se a->esq e a-> direita e nulo
+    // se forem nulos ele printa
     if (a->esq == NULL && a->dir == NULL) {
-      printf(" [%d]", a->info);
+      if (a->info < valor) {
+         printf(" [%d]", a->info);
+      }
+    } else if (a->info >= valor) { // se o valor do nó atual for maior que o valor passado ele vai para a esquerda
+      ImprimirNosFolhasMenoresQueX(a->esq, valor);
     } else {
-      if(a->info < x){
-        ImprimirNosFolhasMenoresQueX(a->dir, x);
-      }
-      else if(a->info > x){
-        ImprimirNosFolhasMenoresQueX(a->esq, x);
-      }
+      ImprimirNosFolhasMenoresQueX(a->esq, valor);
+      ImprimirNosFolhasMenoresQueX(a->dir, valor);
     }
   }
 }
@@ -214,9 +232,9 @@ int menu() {
   printf("2) Imprimir a arvore \n");
   printf("3) Buscar um elemento na arvore \n");
   printf("4) Imprimir o nivel de um no \n");
-  printf("5) Imprimir as folhas menores que um valor x \n");
-  printf("6) inserir um nó na arvore \n");
-  printf("7) remover um nó da arvore \n");
+  printf("5) Imprimir as folhas menores que um valor X \n");
+  printf("6) Inserir um no na arvore \n");
+  printf("7) Remover um no da arvore \n");
   printf("8) Sair \n");
   printf("-------------------- \n");
 
@@ -243,7 +261,7 @@ int main() {
       arq = fopen("entrada.txt", "r");
 
       if (arq == NULL) {
-        printf("\n !! Erro ao abrri o arquivo entrada.txt !! \n");
+        printf("\n !! Erro ao abrir o arquivo entrada.txt !! \n");
         return 1;
       }
 
@@ -315,7 +333,7 @@ int main() {
       break;
     case 5://imprimir folhas menores que x
 
-      printf("qual o filtro de impressao?");
+      printf("Digite o valor: ");
       scanf("%d", &valor);
 
       ImprimirNosFolhasMenoresQueX(a, valor);
@@ -323,7 +341,7 @@ int main() {
       break;
     case 6:// inserir no
 
-      printf("qual valor deseja inserir? ");
+      printf("Qual valor deseja inserir? ");
       scanf("%d", &valor);
 
       a = InserirNo(a, valor);
@@ -331,7 +349,7 @@ int main() {
       break;
     case 7://remover no
 
-      printf("qual valor deseja remover? ");
+      printf("Qual valor deseja remover? ");
       scanf("%d", &valor);
 
       a = RemoverNo(a, valor);
