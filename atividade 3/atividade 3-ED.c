@@ -28,9 +28,16 @@ int altura (arvore *a) {
 void ajustarFB (arvore *a) {
    if (a != NULL) {
       a->fb = altura(a->dir) - altura(a->esq);
-      printf("\nFB: %d", a->fb);
       ajustarFB(a->esq);
       ajustarFB(a->dir);
+   }
+}
+
+void imprimirFB(arvore *a) {
+   if (a!= NULL) {
+      printf("\n %d - FB: %d", a->info, a->fb);
+      imprimirFB(a->esq);
+      imprimirFB(a->dir);
    }
 }
 
@@ -67,7 +74,6 @@ arvore *LerArvore(FILE *arq) {
       printf("Erro: arquivo mal formatado. Falta um parenteses fechando.\n");
       return NULL;
     }
-    ajustarFB(a);
     return a;
   }
 }
@@ -82,9 +88,6 @@ arvore *rotacaoSimplesDireita(arvore *a) {
       printf("\n  %d  --  %d  Rodando para direita", a->esq->info, a->dir->info);
    }
    arvore *b = a->esq;
-   if (b == NULL) {
-      return a;
-   }
    a->esq = b->dir;
    b->dir = a;
    a->fb = altura(a->dir) - altura(a->esq);
@@ -102,9 +105,6 @@ arvore *rotacaoSimplesEsquerda(arvore *a) {
       printf("\n  %d  --  %d  Rodando para esquerda", a->esq->info, a->dir->info);
    }
    arvore *b = a->dir;
-   if (b == NULL) {
-      return a;
-   }
    a->dir = b->esq;
    b->esq = a;
    a->fb = altura(a->dir) - altura(a->esq);
@@ -116,13 +116,13 @@ arvore *balanceiaArvore(arvore *a) {
    if (a != NULL) {
       if (a->fb == -2) {
          if (a->esq->fb == 1) {
-            a = rotacaoSimplesEsquerda(a); // Rotação Dupla
+            a->esq = rotacaoSimplesEsquerda(a->esq); // Rotação Dupla
          }
          a = rotacaoSimplesDireita(a);
          a->fb = altura(a->dir) - altura(a->esq);
       } else if (a->fb == 2) {
          if (a->dir->fb == -1) {
-            a = rotacaoSimplesDireita(a); // Rotação Dupla
+            a->dir = rotacaoSimplesDireita(a->dir); // Rotação Dupla
          }
          a = rotacaoSimplesEsquerda(a);
          a->fb = altura(a->dir) - altura(a->esq);
@@ -167,6 +167,22 @@ void ImprimirLargura(arvore *a, int noDesejado) {
       ImprimirLargura(a->dir, noDesejado - 1);
     }
   }
+}
+
+void imprimirDeLado(arvore *a, int nivel) {
+   if (a == NULL) {
+      return;
+   }
+
+   imprimirDeLado(a->dir, nivel + 1);
+
+   for (int i = 0; i < nivel; i++) {
+      printf("      ");
+   }
+
+   printf("%d\n", a->info);
+
+   imprimirDeLado(a->esq, nivel + 1);
 }
 
 //Implementada busca em arvore binaria de busca
@@ -251,11 +267,15 @@ arvore *InserirNo(arvore *a, int x) {
 //Implementada remover em arvore binaria de busca
 arvore *RemoverNo(arvore* a, int x){
   if(a != NULL){
-    if(x < a->info)
+    if(x < a->info) {
       a->esq = RemoverNo(a->esq, x);
-    else if(x > a->info)
+      a->fb = altura(a->dir) - altura(a->esq);
+      a = balanceiaArvore(a);
+    } else if(x > a->info) {
       a->dir = RemoverNo(a->dir, x);
-    else{
+      a->fb = altura(a->dir) - altura(a->esq);
+      a = balanceiaArvore(a);
+    } else {
       //Se for folha
       if(a->esq == NULL && a->dir == NULL){
         free(a);
@@ -285,6 +305,8 @@ arvore *RemoverNo(arvore* a, int x){
         a->info = aux->info;
         aux->info = x;
         a->esq = RemoverNo(a->esq, x);
+         a->fb = altura(a->dir) - altura(a->esq);
+         a = balanceiaArvore(a);
         return a;
       }
     }
@@ -347,6 +369,7 @@ int main() {
       }
 
       a = LerArvore(arq);
+      ajustarFB(a);
 
       fclose(arq);
 
@@ -359,39 +382,36 @@ int main() {
       printf("2) Ordem \n");
       printf("3) Pos-ordem \n");
       printf("4) Largura \n");
+      printf("5) Impressão Lateral Organizada \n");
+      printf("6) Impressão dos fatores de balanceamento por nó \n");
       printf("Selecione a ordem da arvore: ");
       scanf("%d", &ordem);
 
       switch (ordem) {
-      case 1:
-
-        ImprimirPreOrdem(a);
-
-        break;
-      case 2:
-
-        ImprimirOrdem(a);
-
-        break;
-      case 3:
-
-        ImprimirPosOrdem(a);
-
-        break;
-      case 4:
-
-      //   printf("Digite o nivel desejado:	");
-      //   scanf("%d", &noDesejado);
-
-      for (int i = 0; i <= altura(a); i++) {
-        printf("\nH = %d", i);
-        ImprimirLargura(a, i);
-      }
-
-        break;
-      default:
-        printf("opcao invalida! \n");
-        break;
+         case 1:
+            ImprimirPreOrdem(a);
+            break;
+         case 2:
+            ImprimirOrdem(a);
+            break;
+         case 3:
+            ImprimirPosOrdem(a);
+            break;
+         case 4:
+            for (int i = 0; i <= altura(a); i++) {
+            printf("\nH = %d", i);
+            ImprimirLargura(a, i);
+            }
+         break;
+         case 5:
+            imprimirDeLado(a, 0);
+            break;
+         case 6:
+            imprimirFB(a);
+            break;
+         default:
+         printf("opcao invalida! \n");
+         break;
       }
 
       break;
