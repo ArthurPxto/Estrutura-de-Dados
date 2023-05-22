@@ -1,20 +1,21 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 // Alunos: Arthur Peixoto e Emanuel Bravo
 
 // Todas as combinaçoes de {a, b, c} de tamanho n, que o numero de a's é maior que a soma dos totais de b´s e de c´s   
 
-void imprimirCombinacoes(int *vet, int pos, int n, int *aux){
+void imprimirCombinacoes(char *vet, int pos, int n, char *aux){
 
     if(pos == n){
 
-       /*  printf("\n");
+        /* printf("\n");
         printf("Combinaçao: ");
         for(int i = 0; i < n; i++){
-            printf("%d ", vet[i]);
+            printf("%c ", vet[i]);
         }
-        printf("\n"); */
+        printf("\n");  */
 
 
         int contA = 0, contB = 0, contC = 0;
@@ -23,10 +24,10 @@ void imprimirCombinacoes(int *vet, int pos, int n, int *aux){
             if(vet[i] == aux[0]){
                 contA++;
             }
-            if(vet[i] == aux[1]){
+            if(vet[i] ==  aux[1]){
                 contB++;
             }
-            if(vet[i] == aux[2]){
+            if(vet[i] ==  aux[2]){
                 contC++;
             }
         }
@@ -35,7 +36,7 @@ void imprimirCombinacoes(int *vet, int pos, int n, int *aux){
             printf("Combinacao valida!\n");
 
             for(int i = 0; i < n; i++){
-            printf("%d ", vet[i]);
+            printf("%c ", vet[i]);
             }
             
             printf("\n");
@@ -52,25 +53,14 @@ void imprimirCombinacoes(int *vet, int pos, int n, int *aux){
 
 int main(){
 
-    int n, a, b, c, aux[3];
+    int n;
+    char  aux[3] = {'a', 'b', 'c'}; 
 
     printf("Digite o tamanho das combinacoes: ");
     scanf("%d", &n);
 
-    printf("Digite o primeiro numero: ");
-    scanf("%d", &a);
 
-    printf("Digite o segundo numero: ");
-    scanf("%d", &b);
-
-    printf("Digite o terceiro numero: ");
-    scanf("%d", &c);
-
-    aux[0] = a;
-    aux[1] = b;
-    aux[2] = c;
-
-    int *vetor = (int*) malloc(n * sizeof(int));
+    char *vetor = (char*) malloc(n * sizeof(char));
         if(vetor == NULL){
             printf("Malloc Error! - vetor principal");
             exit(1);
