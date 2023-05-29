@@ -9,45 +9,6 @@ typedef struct lista{
 
 }lista;
 
-void ComparaVetores(lista **grafo, int pos, int *visitados, int destino, int n)
-{
-    int opc;
-
-    printf("1 - Imprimir todos caminhos\n");
-    printf("2 - Imprimir o caminho mais curto\n");
-    printf("3 - Imprimir o caminho de menor custo\n");
-    printf("Digite a opcao desejada: ");
-    scanf("%d", &opc);
-
-    int **vetor = (int**)malloc((n)*sizeof(int*));
-
-    switch (opc)
-    {
-    case 1:
-    {
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, n);
-        
-        break;
-    }
-    case 2:
-    {
-        int aux = 0;
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, aux);    
-    
-        break;
-    }
-    case 3:
-    {
-        int aux = 0;
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, aux);
-    
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 int existe(int *visitados, int vertice, int pos)
 {
     int i;
@@ -104,6 +65,99 @@ void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, 
         }
     }
 }
+
+int calcularCustoCaminho(lista **grafo, int *caminho, int destino) {
+    int custoTotal = 0;
+    int pos = 0;
+
+    while (caminho[pos + 1] != -1 && caminho[pos] != destino) {  //Segmental Fault ???
+        int verticeAtual = caminho[pos];
+        lista *aux = grafo[verticeAtual];
+
+        while (aux != NULL) {
+            if (aux->vertice == caminho[pos + 1]) {
+                custoTotal += aux->custo;
+                break;
+            }
+            aux = aux->prox;
+        }
+
+        pos++;
+    }
+
+    return custoTotal;
+}
+
+
+void imprimirCaminhoMenorCusto(lista **grafo, int origem, int *visitados, int destino, int **vetor, int n) {
+    visitados[0] = origem;
+    Caminhos(grafo, 1, visitados, destino, vetor, 2, n);
+
+    int menorCusto = INT_MAX;
+    int caminhoMaisCurto = -1;
+    for (int i = 0; i < n; i++) {
+        int custo = calcularCustoCaminho(grafo, vetor[i], destino);
+        if (custo < menorCusto) {
+            menorCusto = custo;
+            caminhoMaisCurto = i;
+        }
+    }
+
+    if (caminhoMaisCurto != -1) {
+        printf("Caminho com menor custo: ");
+        for (int i = 0; vetor[caminhoMaisCurto][i] != destino; i++) {
+            printf("%d ", vetor[caminhoMaisCurto][i]);
+        }
+        printf("%d\n", destino);
+    } else {
+        printf("Nenhum caminho encontrado.\n");
+    }
+
+    free(visitados);
+    free(vetor);
+}
+
+void ComparaVetores(lista **grafo, int pos, int *visitados, int destino, int n)
+{
+    int opc;
+
+    printf("1 - Imprimir todos caminhos\n");
+    printf("2 - Imprimir o caminho mais curto\n");
+    printf("3 - Imprimir o caminho de menor custo\n");
+    printf("Digite a opcao desejada: ");
+    scanf("%d", &opc);
+
+    int **vetor = (int**)malloc((n)*sizeof(int*));
+
+    switch (opc)
+    {
+    case 1:
+    {
+        Caminhos(grafo, pos, visitados, destino, vetor, opc, n);
+        
+        break;
+    }
+    case 2:
+    {
+        int aux = 0;
+        Caminhos(grafo, pos, visitados, destino, vetor, opc, aux);    
+    
+        break;
+    }
+    case 3:
+    {
+        int aux = 0;
+        imprimirCaminhoMenorCusto(grafo, pos, visitados, destino, vetor, n);
+      
+
+        break;
+    }
+    default:
+        break;
+    }
+}
+
+
 
 void VerificarCompleto(lista **g, int n)
 {
@@ -267,7 +321,7 @@ int main()
         {
         case 1 : 
         {
-            system("cls");
+            // system("cls");
 
             int origem = 0, destino = 0, custo = 0;
 
@@ -286,7 +340,7 @@ int main()
         }
         case 2:
         {   
-            system("cls");
+            // system("cls");
 
             int origem = 0, destino = 0;
 
@@ -302,7 +356,7 @@ int main()
         }
         case 3:
         {
-            system("cls");
+            // system("cls");
 
             ImprimirGrafo(grafo, n);
 
@@ -313,7 +367,7 @@ int main()
         }
         case 4:
         {
-            system("cls");
+            // system("cls");
 
             int origem = 0;
 
@@ -328,7 +382,7 @@ int main()
         }
         case 5:
         {
-            system("cls");
+            // system("cls");
 
             VerificarCompleto(grafo, n);
             
@@ -339,7 +393,7 @@ int main()
         }
         case 6:
         {
-            system("cls");
+            // system("cls");
 
             int origem = 0, destino = 0;
 
