@@ -1,3 +1,9 @@
+// Trabalho de Estrutura de Dados
+// Grafos direcionais e ponderados
+// 01/06/2023
+// Arthur Peixoto - github.com/ArthurPxto
+// Emanuel Bravo - github.com/bravomanel
+
 #include <stdio.h>
 #include <stdlib.h>
 
