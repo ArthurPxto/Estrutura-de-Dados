@@ -36,74 +36,74 @@ void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, 
     }
     else
     {
-        lista *aux = grafo[visitados[pos-1]];
+        lista *temp = grafo[visitados[pos-1]];
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
 
-            if(!existe(visitados, aux->vertice, pos))
+            if(!existe(visitados, temp->vertice, pos))
             {
-                visitados[pos] = aux->vertice;
+                visitados[pos] = temp->vertice;
                 Caminhos(grafo, pos + 1, visitados, destino, vetor, n);
             }
 
-            aux = aux->prox;
+            temp = temp->prox;
         }
     }
 }
 
-int custoAresta (lista **grafo, int a, int b) {
-   lista *aux = grafo[a];
-   while (aux != NULL) {
-      if (aux->vertice == b) {
+int adicionaAresta (lista **grafo, int a, int b) {
+   lista *temp = grafo[a];
+   while (temp != NULL) {
+      if (temp->vertice == b) {
          return 1;
       }
-      aux = aux->prox;
+      temp = temp->prox;
    }
    return -1;
 }
 
-int calcularAresta (lista **grafo, int *vet, int n) {
-   int i, custo = 0;
-   for (i = 1; i < n; i++) {
-      custo += custoAresta(grafo, vet[i-1], vet[i]);
+int calculaAresta (lista **grafo, int *vet, int n) {
+   int aresta = 0;
+   for (int i = 1; i < n; i++) {
+      aresta += adicionaAresta(grafo, vet[i-1], vet[i]);
    }
-   return custo;
+   return aresta;
 }	
 
 
-void CaminhoMaisCurto (lista **grafo, int *visitados, int pos, int destino, int *menorDistancia, int *vetAux, int *tam) {
+void CaminhoMenorDistancia (lista **grafo, int *visitados, int pos, int destino, int *menorDistancia, int *vetTemp, int *tam) {
    if (visitados[pos-1] == destino) {
-      int custo = calcularAresta(grafo, visitados, pos);
-      if (custo < *menorDistancia) {
+      int aresta = calculaAresta(grafo, visitados, pos);
+      if (aresta < *menorDistancia) {
          int i;
-         *menorDistancia = custo;
+         *menorDistancia = aresta;
          *tam = pos;
          for (i = 0; i < pos; i++) {
-            vetAux[i] = visitados[i];
+            vetTemp[i] = visitados[i];
          }
       }
    } else {
-      lista *aux = grafo[visitados[pos-1]];
-      while (aux != NULL) {
-         if (!existe(visitados, aux->vertice, pos)) {
-            visitados[pos] = aux->vertice;
-            CaminhoMaisCurto(grafo, visitados, pos+1, destino, menorDistancia, vetAux, tam);
+      lista *temp = grafo[visitados[pos-1]];
+      while (temp != NULL) {
+         if (!existe(visitados, temp->vertice, pos)) {
+            visitados[pos] = temp->vertice;
+            CaminhoMenorDistancia(grafo, visitados, pos+1, destino, menorDistancia, vetTemp, tam);
          }
-         aux = aux->prox;
+         temp = temp->prox;
       }
    }
 }
 
 
 
-int custoGrafo (lista **grafo, int a, int b) {
-   lista *aux = grafo[a];
-   while (aux != NULL) {
-      if (aux->vertice == b) {
-         return aux->custo;
+int adicionaCusto (lista **grafo, int a, int b) {
+   lista *temp = grafo[a];
+   while (temp != NULL) {
+      if (temp->vertice == b) {
+         return temp->custo;
       }
-      aux = aux->prox;
+      temp = temp->prox;
    }
    return -1;
 }
@@ -111,12 +111,12 @@ int custoGrafo (lista **grafo, int a, int b) {
 int calcularCusto (lista **grafo, int *vet, int n) {
    int i, custo = 0;
    for (i = 1; i < n; i++) {
-      custo += custoGrafo(grafo, vet[i-1], vet[i]);
+      custo += adicionaCusto(grafo, vet[i-1], vet[i]);
    }
    return custo;
 }	
 
-void CaminhoMenorCusto (lista **grafo, int *visitados, int pos, int destino, int *menorCusto, int *vetAux, int *tam) {
+void CaminhoMenorCusto (lista **grafo, int *visitados, int pos, int destino, int *menorCusto, int *vetTemp, int *tam) {
    if (visitados[pos-1] == destino) {
       int custo = calcularCusto(grafo, visitados, pos);
       if (custo < *menorCusto) {
@@ -124,17 +124,17 @@ void CaminhoMenorCusto (lista **grafo, int *visitados, int pos, int destino, int
          *menorCusto = custo;
          *tam = pos;
          for (i = 0; i < pos; i++) {
-            vetAux[i] = visitados[i];
+            vetTemp[i] = visitados[i];
          }
       }
    } else {
-      lista *aux = grafo[visitados[pos-1]];
-      while (aux != NULL) {
-         if (!existe(visitados, aux->vertice, pos)) {
-            visitados[pos] = aux->vertice;
-            CaminhoMenorCusto(grafo, visitados, pos+1, destino, menorCusto, vetAux, tam);
+      lista *temp = grafo[visitados[pos-1]];
+      while (temp != NULL) {
+         if (!existe(visitados, temp->vertice, pos)) {
+            visitados[pos] = temp->vertice;
+            CaminhoMenorCusto(grafo, visitados, pos+1, destino, menorCusto, vetTemp, tam);
          }
-         aux = aux->prox;
+         temp = temp->prox;
       }
    }
 }
@@ -145,12 +145,12 @@ void VerificarCompleto(lista **g, int n)
 
     for(i = 1; i <= n; i++)
     {
-        lista *aux = g[i];
+        lista *temp = g[i];
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
             cont++;
-            aux = aux->prox;
+            temp = temp->prox;
         }
     }
 
@@ -168,26 +168,26 @@ void ImprimirGraus(lista **grafo, int n, int origem)
 {
     int grauEntrada = 0, grauSaida = 0;
 
-    lista *aux = grafo[origem];
+    lista *temp = grafo[origem];
 
-    while(aux != NULL)
+    while(temp != NULL)
     {
         grauSaida++;
-        aux = aux->prox;
+        temp = temp->prox;
     }
 
     for(int i = 1; i <= n; i++)
     {
-        aux = grafo[i];
+        temp = grafo[i];
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
-            if(aux->vertice == origem)
+            if(temp->vertice == origem)
             {
                 grauEntrada++;
             }
 
-            aux = aux->prox;
+            temp = temp->prox;
         }
     }
 
@@ -203,9 +203,9 @@ lista *RemoverLista(lista *grafo, int destino)
     }
     else if(grafo->vertice == destino)
     {
-        lista *aux = grafo;
+        lista *temp = grafo;
         grafo = grafo->prox;
-        free(aux);
+        free(temp);
     }
     else
     {
@@ -226,14 +226,14 @@ void ImprimirGrafo(lista **grafo, int n)
 
     for(i = 1; i <= n; i++)
     {
-        lista *aux = grafo[i];
+        lista *temp = grafo[i];
 
         printf("Vertice %d: ", i);
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
-            printf("%d ", aux->vertice);
-            aux = aux->prox;
+            printf("%d ", temp->vertice);
+            temp = temp->prox;
         }
 
         printf("\n");
@@ -397,13 +397,13 @@ int main()
             visitados[0] = origem;
 
             int menorDistancia = 9999, tam = 0;
-            int vetAux[n];
-            CaminhoMaisCurto (grafo, visitados, 1, destino, &menorDistancia, vetAux, &tam); 
+            int vetTemp[n];
+            CaminhoMenorDistancia(grafo, visitados, 1, destino, &menorDistancia, vetTemp, &tam); 
 
             printf("Arestas: %d\n", menorDistancia);
             printf("Caminho: ");
             for (int i = 0; i < tam; i++) {
-               printf("%d ", vetAux[i]);
+               printf("%d ", vetTemp[i]);
             } 
 
             break;
@@ -421,13 +421,13 @@ int main()
             visitados[0] = origem;
 
             int menorCusto = 9999, tam = 0;
-            int vetAux[n];
-            CaminhoMenorCusto (grafo, visitados, 1, destino, &menorCusto, vetAux, &tam); 
+            int vetTemp[n];
+            CaminhoMenorCusto(grafo, visitados, 1, destino, &menorCusto, vetTemp, &tam); 
             
             printf("Custo: %d\n", menorCusto);
             printf("Caminho: ");
             for (int i = 0; i < tam; i++) {
-               printf("%d ", vetAux[i]);
+               printf("%d ", vetTemp[i]);
             } 
 
             break;
