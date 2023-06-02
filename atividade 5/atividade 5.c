@@ -9,45 +9,6 @@ typedef struct lista{
 
 }lista;
 
-void ComparaVetores(lista **grafo, int pos, int *visitados, int destino, int n)
-{
-    int opc;
-
-    printf("1 - Imprimir todos caminhos\n");
-    printf("2 - Imprimir o caminho mais curto\n");
-    printf("3 - Imprimir o caminho de menor custo\n");
-    printf("Digite a opcao desejada: ");
-    scanf("%d", &opc);
-
-    int **vetor = (int**)malloc((n)*sizeof(int*));
-
-    switch (opc)
-    {
-    case 1:
-    {
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, n);
-        
-        break;
-    }
-    case 2:
-    {
-        int aux = 0;
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, aux);    
-    
-        break;
-    }
-    case 3:
-    {
-        int aux = 0;
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, aux);
-    
-        break;
-    }
-    default:
-        break;
-    }
-}
-
 int existe(int *visitados, int vertice, int pos)
 {
     int i;
@@ -63,46 +24,119 @@ int existe(int *visitados, int vertice, int pos)
     return 0;
 }
 
-void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, int opc, int n)
+void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, int n)
 {
     if(visitados[pos-1]== destino)
     {
-        if(opc == 1)
-        {
-            printf("\n Caminho: ");
-            for(int i = 0; i < pos; i++)
-            {
-                printf("%d ", visitados[i]);
-            } 
-        }
-        else if (opc == 2)
-        {
-            vetor[n] = visitados;
-            n++;
-        }
-        else if (opc == 3)
-        {
-            vetor[n] = visitados;
-            n++;
-        }
-        
+      printf("\n Caminho: ");
+      for(int i = 0; i < pos; i++)
+      {
+            printf("%d ", visitados[i]);
+      }        
     }
     else
     {
-        lista *aux = grafo[visitados[pos-1]];
+        lista *temp = grafo[visitados[pos-1]];
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
 
-            if(!existe(visitados, aux->vertice, pos))
+            if(!existe(visitados, temp->vertice, pos))
             {
-                visitados[pos] = aux->vertice;
-                Caminhos(grafo, pos + 1, visitados, destino, vetor, opc, n);
+                visitados[pos] = temp->vertice;
+                Caminhos(grafo, pos + 1, visitados, destino, vetor, n);
             }
 
-            aux = aux->prox;
+            temp = temp->prox;
         }
     }
+}
+
+int adicionaAresta (lista **grafo, int a, int b) {
+   lista *temp = grafo[a];
+   while (temp != NULL) {
+      if (temp->vertice == b) {
+         return 1;
+      }
+      temp = temp->prox;
+   }
+   return -1;
+}
+
+int calculaAresta (lista **grafo, int *vet, int n) {
+   int aresta = 0;
+   for (int i = 1; i < n; i++) {
+      aresta += adicionaAresta(grafo, vet[i-1], vet[i]);
+   }
+   return aresta;
+}	
+
+
+void CaminhoMenorDistancia (lista **grafo, int *visitados, int pos, int destino, int *menorDistancia, int *vetTemp, int *tam) {
+   if (visitados[pos-1] == destino) {
+      int aresta = calculaAresta(grafo, visitados, pos);
+      if (aresta < *menorDistancia) {
+         int i;
+         *menorDistancia = aresta;
+         *tam = pos;
+         for (i = 0; i < pos; i++) {
+            vetTemp[i] = visitados[i];
+         }
+      }
+   } else {
+      lista *temp = grafo[visitados[pos-1]];
+      while (temp != NULL) {
+         if (!existe(visitados, temp->vertice, pos)) {
+            visitados[pos] = temp->vertice;
+            CaminhoMenorDistancia(grafo, visitados, pos+1, destino, menorDistancia, vetTemp, tam);
+         }
+         temp = temp->prox;
+      }
+   }
+}
+
+
+
+int adicionaCusto (lista **grafo, int a, int b) {
+   lista *temp = grafo[a];
+   while (temp != NULL) {
+      if (temp->vertice == b) {
+         return temp->custo;
+      }
+      temp = temp->prox;
+   }
+   return -1;
+}
+
+int calcularCusto (lista **grafo, int *vet, int n) {
+   int i, custo = 0;
+   for (i = 1; i < n; i++) {
+      custo += adicionaCusto(grafo, vet[i-1], vet[i]);
+   }
+   return custo;
+}	
+
+void CaminhoMenorCusto (lista **grafo, int *visitados, int pos, int destino, int *menorCusto, int *vetTemp, int *tam) {
+   if (visitados[pos-1] == destino) {
+      int custo = calcularCusto(grafo, visitados, pos);
+      if (custo < *menorCusto) {
+         int i;
+         *menorCusto = custo;
+         *tam = pos;
+         for (i = 0; i < pos; i++) {
+            vetTemp[i] = visitados[i];
+         }
+      }
+   } else {
+      lista *temp = grafo[visitados[pos-1]];
+      while (temp != NULL) {
+         if (!existe(visitados, temp->vertice, pos)) {
+            visitados[pos] = temp->vertice;
+            CaminhoMenorCusto(grafo, visitados, pos+1, destino, menorCusto, vetTemp, tam);
+         }
+         temp = temp->prox;
+      }
+   }
 }
 
 void VerificarCompleto(lista **g, int n)
@@ -111,22 +145,22 @@ void VerificarCompleto(lista **g, int n)
 
     for(i = 1; i <= n; i++)
     {
-        lista *aux = g[i];
+        lista *temp = g[i];
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
             cont++;
-            aux = aux->prox;
+            temp = temp->prox;
         }
     }
 
     if(cont == n*(n - 1))
     {
-        printf("O grafo e completo!\n");
+        printf("O grafo eh completo!\n");
     }
     else
     {
-        printf("O grafo nao e completo!\n");
+        printf("O grafo nao eh completo!\n");
     }
 }
 
@@ -134,26 +168,26 @@ void ImprimirGraus(lista **grafo, int n, int origem)
 {
     int grauEntrada = 0, grauSaida = 0;
 
-    lista *aux = grafo[origem];
+    lista *temp = grafo[origem];
 
-    while(aux != NULL)
+    while(temp != NULL)
     {
         grauSaida++;
-        aux = aux->prox;
+        temp = temp->prox;
     }
 
     for(int i = 1; i <= n; i++)
     {
-        aux = grafo[i];
+        temp = grafo[i];
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
-            if(aux->vertice == origem)
+            if(temp->vertice == origem)
             {
                 grauEntrada++;
             }
 
-            aux = aux->prox;
+            temp = temp->prox;
         }
     }
 
@@ -169,9 +203,9 @@ lista *RemoverLista(lista *grafo, int destino)
     }
     else if(grafo->vertice == destino)
     {
-        lista *aux = grafo;
+        lista *temp = grafo;
         grafo = grafo->prox;
-        free(aux);
+        free(temp);
     }
     else
     {
@@ -192,14 +226,14 @@ void ImprimirGrafo(lista **grafo, int n)
 
     for(i = 1; i <= n; i++)
     {
-        lista *aux = grafo[i];
+        lista *temp = grafo[i];
 
         printf("Vertice %d: ", i);
 
-        while(aux != NULL)
+        while(temp != NULL)
         {
-            printf("%d ", aux->vertice);
-            aux = aux->prox;
+            printf("%d ", temp->vertice);
+            temp = temp->prox;
         }
 
         printf("\n");
@@ -240,7 +274,9 @@ int Menu()
     printf("3 - Imprimir grafo\n");
     printf("4 - Imprimir graus de entrada e saida de um vertice\n");
     printf("5 - Verificar se um grafo e completo\n");
-    printf("6 - Imprimir caminhos\n");
+    printf("6 - Imprimir todos os caminhos\n");
+    printf("7 - Imprimir o caminho mais curto\n");
+    printf("8 - Imprimir o caminho de menor custo\n");
 
     printf("9 - Sair\n");
     printf("Digite a opcao desejada: ");
@@ -255,11 +291,29 @@ int main()
 
     printf("Deseja ter um grafo de quantos vertices? ");
     scanf("%d", &n);
+
+   // Caso queira testar o grafo da questão 1, descomente as linhas abaixo e comente as linhas acima
+    // n=4;
     
+
     // a posição 0 nao e usada para facilitar a manipulação
     lista **grafo = (lista**)malloc((n + 1)*sizeof(lista*));
 
     Inicializa(grafo, n);
+
+   // Caso queira testar o grafo da questão 1, descomente as linhas abaixo
+   //  InserirAresta(grafo, 1, 2, 1);
+   //  InserirAresta(grafo, 1, 3, 2);
+   //  InserirAresta(grafo, 1, 4, 3);
+   //  InserirAresta(grafo, 2, 1, 1);
+   //  InserirAresta(grafo, 2, 3, 1);
+   //  InserirAresta(grafo, 2, 4, 2);
+   //  InserirAresta(grafo, 3, 1, 2);
+   //  InserirAresta(grafo, 3, 2, 1);
+   //  InserirAresta(grafo, 3, 4, 1);
+   //  InserirAresta(grafo, 4, 3, 1);
+   //  InserirAresta(grafo, 4, 2, 2);
+   //  InserirAresta(grafo, 4, 1, 3);
 
     while (1)
     {    
@@ -267,8 +321,6 @@ int main()
         {
         case 1 : 
         {
-            system("cls");
-
             int origem = 0, destino = 0, custo = 0;
 
             printf("Digite a origem: ");
@@ -286,8 +338,6 @@ int main()
         }
         case 2:
         {   
-            system("cls");
-
             int origem = 0, destino = 0;
 
             printf("Digite a origem: ");
@@ -297,50 +347,45 @@ int main()
             scanf("%d", &destino);
             
             RemoverAresta(grafo, origem, destino);
-
             break;
         }
         case 3:
         {
-            system("cls");
-
             ImprimirGrafo(grafo, n);
-
-            printf("\n Digite qualquer tecla para continuar: ");
-            getchar();
-
             break;
         }
         case 4:
         {
-            system("cls");
-
             int origem = 0;
 
             printf("Digite o vertice: ");
             scanf("%d", &origem);
 
             ImprimirGraus(grafo, n, origem);   
-
-            printf("\n Digite qualquer tecla para continuar: ");
-            getchar();
             break;
         }
         case 5:
         {
-            system("cls");
-
             VerificarCompleto(grafo, n);
-            
-            printf("\n Digite qualquer tecla para continuar: ");
-            getchar();
-            
             break;
         }
         case 6:
         {
-            system("cls");
+            int origem = 0, destino = 0;
 
+            printf("Digite a origem: ");
+            scanf("%d", &origem);
+            printf("Digite o destino: ");
+            scanf("%d", &destino);
+
+            int *visitados = (int*)malloc((n)*sizeof(int));
+            visitados[0] = origem;
+            int **vetor = (int**)malloc((n)*sizeof(int*));
+            Caminhos(grafo, 1, visitados, destino, vetor, n);
+            break;
+        }
+        case 7:
+        {
             int origem = 0, destino = 0;
 
             printf("Digite a origem: ");
@@ -351,10 +396,40 @@ int main()
             int *visitados = (int*)malloc((n)*sizeof(int));
             visitados[0] = origem;
 
-            ComparaVetores(grafo, 1, visitados, destino, n);
+            int menorDistancia = 9999, tam = 0;
+            int vetTemp[n];
+            CaminhoMenorDistancia(grafo, visitados, 1, destino, &menorDistancia, vetTemp, &tam); 
 
-            printf("\n Digite qualquer tecla para continuar: ");
-            getchar();
+            printf("Arestas: %d\n", menorDistancia);
+            printf("Caminho: ");
+            for (int i = 0; i < tam; i++) {
+               printf("%d ", vetTemp[i]);
+            } 
+
+            break;
+        }
+        case 8:
+        {
+            int origem = 0, destino = 0;
+
+            printf("Digite a origem: ");
+            scanf("%d", &origem);
+            printf("Digite o destino: ");
+            scanf("%d", &destino);
+
+            int *visitados = (int*)malloc((n)*sizeof(int));
+            visitados[0] = origem;
+
+            int menorCusto = 9999, tam = 0;
+            int vetTemp[n];
+            CaminhoMenorCusto(grafo, visitados, 1, destino, &menorCusto, vetTemp, &tam); 
+            
+            printf("Custo: %d\n", menorCusto);
+            printf("Caminho: ");
+            for (int i = 0; i < tam; i++) {
+               printf("%d ", vetTemp[i]);
+            } 
+
             break;
         }
         case 9:
