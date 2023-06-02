@@ -24,29 +24,15 @@ int existe(int *visitados, int vertice, int pos)
     return 0;
 }
 
-void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, int opc, int n)
+void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, int n)
 {
     if(visitados[pos-1]== destino)
     {
-        if(opc == 1)
-        {
-            printf("\n Caminho: ");
-            for(int i = 0; i < pos; i++)
-            {
-                printf("%d ", visitados[i]);
-            } 
-        }
-        else if (opc == 2)
-        {
-            vetor[n] = visitados;
-            n++;
-        }
-        else if (opc == 3)
-        {
-            vetor[n] = visitados;
-            n++;
-        }
-        
+      printf("\n Caminho: ");
+      for(int i = 0; i < pos; i++)
+      {
+            printf("%d ", visitados[i]);
+      }        
     }
     else
     {
@@ -58,7 +44,7 @@ void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, 
             if(!existe(visitados, aux->vertice, pos))
             {
                 visitados[pos] = aux->vertice;
-                Caminhos(grafo, pos + 1, visitados, destino, vetor, opc, n);
+                Caminhos(grafo, pos + 1, visitados, destino, vetor, n);
             }
 
             aux = aux->prox;
@@ -66,56 +52,48 @@ void Caminhos(lista **grafo, int pos, int *visitados, int destino, int **vetor, 
     }
 }
 
-int calcularCustoCaminho(lista **grafo, int *caminho, int destino) {
-    int custoTotal = 0;
-    int pos = 0;
-
-    while (caminho[pos + 1] != -1 && caminho[pos] != destino) {  //Segmental Fault ???
-        int verticeAtual = caminho[pos];
-        lista *aux = grafo[verticeAtual];
-
-        while (aux != NULL) {
-            if (aux->vertice == caminho[pos + 1]) {
-                custoTotal += aux->custo;
-                break;
-            }
-            aux = aux->prox;
-        }
-
-        pos++;
-    }
-
-    return custoTotal;
+int custoAresta (lista **grafo, int a, int b) {
+   lista *aux = grafo[a];
+   while (aux != NULL) {
+      if (aux->vertice == b) {
+         return aux->custo;
+      }
+      aux = aux->prox;
+   }
+   return -1;
 }
 
+int calcularCusto (lista **grafo, int *vet, int n) {
+   int i, custo = 0;
+   for (i = 1; i < n-1; i++) {
+      custo += custoAresta(grafo, vet[i-1], vet[i]);
+   }
+   return custo;
+}	
 
-void imprimirCaminhoMenorCusto(lista **grafo, int origem, int *visitados, int destino, int **vetor, int n) {
-    visitados[0] = origem;
-    Caminhos(grafo, 1, visitados, destino, vetor, 2, n);
-
-    int menorCusto = INT_MAX;
-    int caminhoMaisCurto = -1;
-    for (int i = 0; i < n; i++) {
-        int custo = calcularCustoCaminho(grafo, vetor[i], destino);
-        if (custo < menorCusto) {
-            menorCusto = custo;
-            caminhoMaisCurto = i;
-        }
-    }
-
-    if (caminhoMaisCurto != -1) {
-        printf("Caminho com menor custo: ");
-        for (int i = 0; vetor[caminhoMaisCurto][i] != destino; i++) {
-            printf("%d ", vetor[caminhoMaisCurto][i]);
-        }
-        printf("%d\n", destino);
-    } else {
-        printf("Nenhum caminho encontrado.\n");
-    }
-
-    free(visitados);
-    free(vetor);
+void CaminhoMenorCusto (lista **grafo, int *visitados, int pos, int destino, int *menorCusto, int *vetAux, int *tam) {
+   if (visitados[pos-1] == destino) {
+      int custo = calcularCusto(grafo, visitados, pos);
+      if (custo < *menorCusto) {
+         int i;
+         *menorCusto = custo;
+         *tam = pos;
+         for (i = 0; i < pos; i++) {
+            vetAux[i] = visitados[i];
+         }
+      }
+   } else {
+      lista *aux = grafo[visitados[pos-1]];
+      while (aux != NULL) {
+         if (!existe(visitados, aux->vertice, pos)) {
+            visitados[pos] = aux->vertice;
+            CaminhoMenorCusto(grafo, visitados, pos+1, destino, menorCusto, vetAux, tam);
+         }
+         aux = aux->prox;
+      }
+   }
 }
+
 
 void ComparaVetores(lista **grafo, int pos, int *visitados, int destino, int n)
 {
@@ -133,21 +111,22 @@ void ComparaVetores(lista **grafo, int pos, int *visitados, int destino, int n)
     {
     case 1:
     {
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, n);
+        Caminhos(grafo, pos, visitados, destino, vetor, n);
         
         break;
     }
     case 2:
     {
-        int aux = 0;
-        Caminhos(grafo, pos, visitados, destino, vetor, opc, aux);    
+        int *menorCusto, *tam;
+        int vetAux[n];
+        CaminhoMenorCusto (grafo, visitados, pos, destino, menorCusto, vetAux, tam);  
     
         break;
     }
     case 3:
     {
         int aux = 0;
-        imprimirCaminhoMenorCusto(grafo, pos, visitados, destino, vetor, n);
+      //   imprimirCaminhoMenorCusto(grafo, pos, visitados, destino, vetor, n);
       
 
         break;
@@ -308,12 +287,27 @@ int main()
     int n;
 
     printf("Deseja ter um grafo de quantos vertices? ");
-    scanf("%d", &n);
+   //  scanf("%d", &n);
+
+   n=4;
     
     // a posição 0 nao e usada para facilitar a manipulação
     lista **grafo = (lista**)malloc((n + 1)*sizeof(lista*));
 
     Inicializa(grafo, n);
+
+    InserirAresta(grafo, 1, 2, 1);
+    InserirAresta(grafo, 1, 3, 2);
+    InserirAresta(grafo, 1, 4, 3);
+    InserirAresta(grafo, 2, 1, 1);
+    InserirAresta(grafo, 2, 3, 1);
+    InserirAresta(grafo, 2, 4, 2);
+    InserirAresta(grafo, 3, 1, 2);
+    InserirAresta(grafo, 3, 2, 1);
+    InserirAresta(grafo, 3, 4, 1);
+    InserirAresta(grafo, 4, 3, 1);
+    InserirAresta(grafo, 4, 2, 2);
+    InserirAresta(grafo, 4, 1, 3);
 
     while (1)
     {    
