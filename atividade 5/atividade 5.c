@@ -117,9 +117,12 @@ void ComparaVetores(lista **grafo, int pos, int *visitados, int destino, int n)
     }
     case 2:
     {
-        int *menorCusto, *tam;
+        int menorCusto = 9999, tam = 0;
         int vetAux[n];
-        CaminhoMenorCusto (grafo, visitados, pos, destino, menorCusto, vetAux, tam);  
+        CaminhoMenorCusto (grafo, visitados, pos, destino, &menorCusto, vetAux, &tam);  
+        for (int i = 0; i < tam; i++) {
+            printf("%d ", vetAux[i]);
+        }
     
         break;
     }
