@@ -8,7 +8,7 @@
 #include <stdlib.h>
 
 char NomeArquivo[50] = "alunos.txt";
-int TamanhoLista;
+int TamanhoLista = 11;
 
 typedef struct Aluno {
    int mat;
@@ -19,13 +19,15 @@ typedef struct Aluno {
 
 
 int hash (int chave) {
-   return chave % TamanhoLista;
+   int hash = chave % TamanhoLista;
+   return hash;
 }
 
 void inicializar () {
    FILE *arquivo = fopen(NomeArquivo, "wb");
    aluno novo;
    novo.disponibilidade = 1;
+   novo.mat = -1;
    for (int i = 0; i < TamanhoLista; i++) {
       fwrite(&novo, sizeof(aluno), 1, arquivo);
    }
@@ -33,15 +35,15 @@ void inicializar () {
 }
 
 
-int acharPosicao(int x) {
-   int pos = hash(x);
+int acharPosicao(int mat) {
+   int pos = hash(mat);
    aluno temp;
    FILE *arquivo = fopen(NomeArquivo, "rb");
-   fseek (arquivo, x*sizeof(aluno), SEEK_SET);
+   fseek (arquivo, pos*sizeof(aluno), SEEK_SET);
    fread(&temp, sizeof(aluno), 1, arquivo);
    while(temp.disponibilidade == 0) {
       pos = (pos + 1) % TamanhoLista;
-      fseek (arquivo, x*sizeof(aluno), SEEK_SET);
+      fseek (arquivo, pos*sizeof(aluno), SEEK_SET);
       fread(&temp, sizeof(aluno), 1, arquivo);
    }
    fclose(arquivo);
@@ -49,16 +51,16 @@ int acharPosicao(int x) {
 }
 
 void novoAluno() {
-   aluno *novo = (aluno*)malloc(sizeof(aluno));
+   aluno novo;
    printf("\nMatricula do aluno:");
-   scanf("%d", &novo->mat);
-   printf("\nNome do aluno:");
-   scanf("%s", novo->nome);
-   printf("\nCurso do aluno:");
-   scanf("%s", novo->curso);
+   scanf("%d", &novo.mat);
+   printf("Nome do aluno:");
+   scanf("%s", novo.nome);
+   printf("Curso do aluno:");
+   scanf("%s", novo.curso);
 
-   int pos = acharPosicao(novo->mat);
-   novo->disponibilidade = 0;
+   int pos = acharPosicao(novo.mat);
+   novo.disponibilidade = 0;
 
    FILE *arquivo = fopen(NomeArquivo, "r+b");
    fseek(arquivo, pos*sizeof(aluno), SEEK_SET);
@@ -73,7 +75,10 @@ void acharAluno(int matricula) {
    fseek(arquivo, pos*sizeof(aluno), SEEK_SET);
    fread(&temp, sizeof(aluno), 1, arquivo);
 
-   while (temp.mat != matricula || temp.disponibilidade == 1) {
+   for (int i = 0; i < TamanhoLista; i++) {
+      if (temp.mat == matricula) {
+         break;
+      }
       pos = (pos + 1) % TamanhoLista;
       fseek(arquivo, pos*sizeof(aluno), SEEK_SET);
       fread(&temp, sizeof(aluno), 1, arquivo);
@@ -87,6 +92,22 @@ void acharAluno(int matricula) {
       printf("\nCurso: %s", temp.curso);
    }
 
+}
+
+void imprimirTabela() {
+   FILE *arquivo = fopen(NomeArquivo, "rb");
+   aluno temp;
+   printf("\n");
+   for (int i = 0; i < TamanhoLista; i++) {
+         printf("%d  ", i);
+   }
+   printf("\n");
+   for (int i = 0; i < TamanhoLista; i++) {
+      fseek(arquivo, i*sizeof(aluno), SEEK_SET);
+      fread(&temp, sizeof(aluno), 1, arquivo);
+      printf("%d ", temp.mat);
+   }
+   fclose(arquivo);
 }
 
 int Menu()
@@ -107,16 +128,7 @@ int Menu()
 
 int main()
 {
-
-   // printf("\nDigite o tamanho máximo da tabela hash: ");
-   // scanf("%d", &TamanhoLista);
-
-   TamanhoLista = 11;
-   printf("\nTamanho máximo da tabela hash: 11");
-
    inicializar();
-
-   // char NomeArquivo[50] = "alunos.txt";
 
     while (1)
     {    
@@ -140,7 +152,7 @@ int main()
         }
         case 3:
         {
-            
+            imprimirTabela();
             break;
         }
         case 4:
