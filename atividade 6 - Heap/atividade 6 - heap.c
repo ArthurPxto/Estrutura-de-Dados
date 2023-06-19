@@ -13,7 +13,7 @@ int totalElementos;
 
 int indiceFilhoEsquerdo(int elemento) {
     int indice = 2 * elemento + 1;
-    if (elemento >= totalElementos || indice >= totalElementos) {
+    if (indice >= totalElementos) {
         return -1;
     } else {
       return indice;
@@ -21,8 +21,8 @@ int indiceFilhoEsquerdo(int elemento) {
 }
 
 int indiceFilhoDireito(int elemento) {
-    int indice = 2 * elemento + 1;
-    if (elemento >= totalElementos || indice >= totalElementos) {
+    int indice = 2 * elemento + 2;
+    if (indice >= totalElementos) {
         return -1;
     } else {
       return indice;
@@ -63,14 +63,14 @@ void ajustarDescendo(int *heap, int pos) {
    if (totalElementos == 0) {
       return;
    } else {
-      int dir = indiceFilhoDireito(pos);
       int esq = indiceFilhoEsquerdo(pos);
+      int dir = indiceFilhoDireito(pos);
       if (esq == -1) {
          return;
       } else {
-         int indiceMenorfilho = heap[esq];
+         int indiceMenorfilho = esq;
          if (dir != -1 && heap[dir] < heap[esq]) {
-            indiceMenorfilho = heap[dir];
+            indiceMenorfilho = dir;
          }
          if (heap[indiceMenorfilho] < heap[pos]) {
             int aux = heap[pos];
@@ -106,10 +106,6 @@ void imprimirHeap(int *heap) {
    for (int i = 0; i < totalElementos; i++) {
       printf("%d ", heap[i]);
    }
-}
-
-int impressaoProibida() {
-
 }
 
 int Menu()
@@ -164,11 +160,6 @@ int main()
         case 3:
         {
             imprimirHeap(heap);
-            break;
-        }
-        case 7:
-        {
-            impressaoProibida();
             break;
         }
 
