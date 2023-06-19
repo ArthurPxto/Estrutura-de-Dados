@@ -86,6 +86,8 @@ void acharAluno(int matricula) {
 
    if (temp.disponibilidade == 1) {
       printf("\nAluno não encontrado.");
+   } else if(temp.mat != matricula){
+      printf("\nAluno não encontrado.");
    } else {
       printf("\nMatricula: %d", temp.mat);
       printf("\nAluno: %s", temp.nome);
