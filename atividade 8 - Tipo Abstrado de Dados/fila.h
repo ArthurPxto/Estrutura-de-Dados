@@ -1,3 +1,9 @@
+// Trabalho de Estrutura de Dados
+// Tipo Abstrato de Dados
+// 20/06/2023
+// Arthur Peixoto - github.com/ArthurPxto
+// Emanuel Bravo - github.com/bravomanel
+
 #ifndef fila_h
 #define fila_h
 //mostra o menu
