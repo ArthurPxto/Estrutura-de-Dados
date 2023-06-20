@@ -2,9 +2,12 @@
 #include <stdio.h>  
 #include "fila.h"
 
+
 int main()
 {
-    int opc, *vet;
+    int opc;
+
+    Fila f = criarFila();
 
     while(1)
     {
@@ -13,15 +16,19 @@ int main()
         switch(opc)
         {
             case 1:
-                vet = inserirFila(vet);
+                f = inserirFila(f);
+                limpaTela();
                 break;
             case 2:
-                vet = removerFila(vet);
+                f = removerFila(f);
+                limpaTela();
                 break;
             case 3:
-                imprimirFila(vet);
+                imprimirFila(f);
+                limpaTela();
                 break;
             case 4:
+                liberarFila(f);
                 printf("Saindo...\n");
                 return 0;
                 break;
