@@ -9,7 +9,7 @@
 #include "fila.h"
 
 //capacidade maxima da fila
-#define N 100
+#define N 5
 
 // declarando a fila
 struct fila {
@@ -100,22 +100,17 @@ Fila removerFila(Fila f)
 
     int x, verificador = 0;
 
-    printf("Digite o valor a ser removido: ");
-    scanf("%d", &x);
+    x = f->vet[0];
 
-    for(int i = 0; i < f->top; i++)
-    {
-        if(f->vet[i] == x)
+        printf("elemento %d removido com sucesso\n", x);
+        verificador = 1;
+        for(int j = 0; j < f->top; j++)
         {
-            printf("elemento %d removido com sucesso\n", x);
-            verificador = 1;
-            for(int j = i; j < f->top; j++)
-            {
-                f->vet[j] = f->vet[j + 1];
-            }
-            break;
+            f->vet[j] = f->vet[j + 1];
         }
-    }
+
+  
+
 
     if(verificador == 0)
         printf("elemento %d nao encontrado\n", x);
