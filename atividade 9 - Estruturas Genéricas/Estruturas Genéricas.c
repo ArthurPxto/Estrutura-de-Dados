@@ -29,7 +29,7 @@ typedef struct humano
     int tipo; // 1 = professor, 2 = aluno
     void *profissao; // ponteiro para professor ou aluno
 
-} pessoa;
+} humano;
 
 typedef struct lista
 {
@@ -46,7 +46,7 @@ void imprimirLista(Lista *l){
         return;
     }
 
-    pessoa *x = aux->pessoa;
+    humano *x = aux->pessoa;
     professor *p;
     aluno *a;
 
@@ -70,14 +70,16 @@ void imprimirLista(Lista *l){
     }
 }
 
-void verificaProfissao(pessoa *x)
+void verificaProfissao(humano *x)
 {
     printf("Entrou na verifica\n");
+    
+    professor *p;
 
     if (x->tipo == 1)
     {
+        p = (professor *) x->profissao;
         printf("Professor\n");
-        professor *p = (professor *) x->profissao;
         printf("Nome: %s\n", p->nome);
         printf("Matricula: %d\n", p->matricula);
         printf("Salario: %d\n", p->salario);
@@ -109,11 +111,13 @@ void buscarPessoa(Lista *l){
         printf("Entrou %d vez\n", n);
         n++;
 
-        pessoa *x = aux->pessoa;
+        humano *x = aux->pessoa;
+        professor *p;
+        aluno *a;
 
         if(x->tipo == 1){
             printf("Professor- entrou\n");
-            professor *p = (professor *) x->profissao;
+            p = x->profissao;
             if(p->matricula == matricula){
                 printou = 1;
                 verificaProfissao(x);
@@ -121,7 +125,7 @@ void buscarPessoa(Lista *l){
             }
         }else{
             printf("Aluno- entrou\n");
-            aluno *a = (aluno *) x->profissao;
+            a = x->profissao;
             if(a->matricula == matricula){
                 printou = 1;
                 verificaProfissao(x);
@@ -149,20 +153,22 @@ Lista *removerLista(Lista *l){
     printf("Informe a matricula da pessoa que deseja remover: ");
     scanf("%d", &matricula);
 
-    pessoa *x = aux->pessoa;
+    humano *x = aux->pessoa;
     professor *p;
     aluno *a;
 
     while(aux != NULL){
 
         if(x->tipo == 1){
-            p = (professor *) x->profissao;
+            p = x->profissao;
             if(p->matricula == matricula){
+                printf("Professor removido\n");
                 break;
             }
         }else{
-            a = (aluno *) x->profissao;
+            a = x->profissao;
             if(a->matricula == matricula){
+                printf("Aluno removido\n");
                 break;
         }
 
@@ -186,7 +192,7 @@ Lista *removerLista(Lista *l){
 
 }
 
-pessoa *criarPessoa()
+humano *criarPessoa()
 {
     int tipo;
 
@@ -195,43 +201,39 @@ pessoa *criarPessoa()
     printf("Informe o tipo de pessoa: ");
     scanf("%d", &tipo);
 
-    pessoa *p = (pessoa *)malloc(sizeof(pessoa));
-    p->tipo = tipo;
-    
+    humano *h;
+    h->tipo = tipo;
+    professor *p;
+    aluno *a;
 
     if(tipo == 1)
     {
-        p->profissao = (professor *)malloc(sizeof(professor));
+        h->profissao = (professor *) p;
 
-        professor *x = (professor *)malloc(sizeof(professor));
         
         printf("Informe o nome do professor: ");
-        scanf("%s", x->nome);
+        scanf("%s", p->nome);
         printf("Informe a matricula do professor: ");
-        scanf("%d", &x->matricula);
+        scanf("%d", &p->matricula);
         printf("Informe o salario do professor: ");
-        scanf("%d", &x->salario);
+        scanf("%d", &p->salario);
 
-        p->profissao = x;
+        h->profissao = p;
 
         verificaProfissao(p);
     }
     else if(tipo == 2)
     {
-        p->profissao = (aluno *)malloc(sizeof(aluno));
-
-        aluno *x = (aluno *)malloc(sizeof(aluno));
+        h->profissao = (aluno *) a;
 
         printf("Informe o nome do aluno: ");
-        scanf("%s", x->nome);
+        scanf("%s", a->nome);
         printf("Informe a matricula do aluno: ");
-        scanf("%d", &x->matricula);
+        scanf("%d", &a->matricula);
         printf("Informe o ano de ingresso do aluno: ");
-        scanf("%d", &x->anoIngresso);
+        scanf("%d", &a->anoIngresso);
         printf("Informe o curso do aluno: ");
-        scanf("%s", x->curso);
-
-        p->profissao = x;
+        scanf("%s", a->curso);
 
         verificaProfissao(p);
     }
