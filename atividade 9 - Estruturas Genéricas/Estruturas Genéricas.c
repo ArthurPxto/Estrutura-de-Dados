@@ -37,11 +37,11 @@ typedef struct lista
     struct lista *prox;
 
 } Lista;
-
+// imprime a lista - operante
 void imprimirLista(Lista *l){
     Lista *aux = l;
 
-    if(aux == NULL){
+    if(aux->pessoa == NULL){
         printf("Lista vazia\n");
         return;
     }
@@ -50,8 +50,9 @@ void imprimirLista(Lista *l){
     professor *p;
     aluno *a;
 
+    printf(" \n--------- imprimindo lista -----------\n");
     while(aux != NULL){
-        printf("--------------------\n");
+        x = aux->pessoa;
         printf("Tipo: %d\n", x->tipo);
         if(x->tipo == 1){
             p = (professor *) x->profissao;
@@ -68,25 +69,26 @@ void imprimirLista(Lista *l){
 
         aux = aux->prox;
     }
+    printf(" \n--------- fim da lista -----------\n");
 }
-
+// imprime a profissao - operante
 void verificaProfissao(humano *x)
 {
-    printf("Entrou na verifica\n");
     
     professor *p;
 
     if (x->tipo == 1)
     {
         p = (professor *) x->profissao;
-        printf("Professor\n");
+
+        printf("\nProfessor\n");
         printf("Nome: %s\n", p->nome);
         printf("Matricula: %d\n", p->matricula);
         printf("Salario: %d\n", p->salario);
     }
     else
     {
-        printf("Aluno\n");
+        printf("\nAluno\n");
         aluno *a = (aluno *) x->profissao;
         printf("Nome: %s\n", a->nome);
         printf("Matricula: %d\n", a->matricula);
@@ -94,7 +96,7 @@ void verificaProfissao(humano *x)
         printf("Curso: %s\n", a->curso);
     }
 }
-
+// busca as pessoas - operante
 void buscarPessoa(Lista *l){
     
     
@@ -104,28 +106,23 @@ void buscarPessoa(Lista *l){
     printf("Informe a matricula da pessoa que deseja buscar: ");
     scanf("%d", &matricula);
 
-    int n = 0;
-
     while(aux != NULL){
-
-        printf("Entrou %d vez\n", n);
-        n++;
 
         humano *x = aux->pessoa;
         professor *p;
         aluno *a;
 
         if(x->tipo == 1){
-            printf("Professor- entrou\n");
-            p = x->profissao;
+
+            p = (professor *) x->profissao;
             if(p->matricula == matricula){
                 printou = 1;
                 verificaProfissao(x);
                 break;
             }
         }else{
-            printf("Aluno- entrou\n");
-            a = x->profissao;
+
+            a = (aluno *) x->profissao;
             if(a->matricula == matricula){
                 printou = 1;
                 verificaProfissao(x);
@@ -139,7 +136,7 @@ void buscarPessoa(Lista *l){
     if(printou == 0)
         printf("Pessoa nao encontrada\n");
 }
-
+// função para remover uma pessoa - operante
 Lista *removerLista(Lista *l){
     Lista *aux = l;
     Lista *ant = NULL;
@@ -191,7 +188,7 @@ Lista *removerLista(Lista *l){
     return l;
 
 }
-
+// funcão para criar uma pessoa - operante
 humano *criarPessoa()
 {
     int tipo;
@@ -201,15 +198,14 @@ humano *criarPessoa()
     printf("Informe o tipo de pessoa: ");
     scanf("%d", &tipo);
 
-    humano *h;
+    humano *h = (humano *) malloc(sizeof(humano)); 
+    professor *p = (professor *) malloc(sizeof(professor));
+    aluno *a = (aluno *) malloc(sizeof(aluno));
+    
     h->tipo = tipo;
-    professor *p;
-    aluno *a;
 
     if(tipo == 1)
     {
-        h->profissao = (professor *) p;
-
         
         printf("Informe o nome do professor: ");
         scanf("%s", p->nome);
@@ -218,13 +214,11 @@ humano *criarPessoa()
         printf("Informe o salario do professor: ");
         scanf("%d", &p->salario);
 
-        h->profissao = p;
+        h->profissao = (professor *) p;
 
-        verificaProfissao(p);
     }
     else if(tipo == 2)
     {
-        h->profissao = (aluno *) a;
 
         printf("Informe o nome do aluno: ");
         scanf("%s", a->nome);
@@ -235,12 +229,13 @@ humano *criarPessoa()
         printf("Informe o curso do aluno: ");
         scanf("%s", a->curso);
 
-        verificaProfissao(p);
+        h->profissao = (aluno *) a;
+    
     }
 
-    return p;
+    return h;
 }
-
+// funcão para inserir no final da lista - operante
 Lista *inserirNoFinal(Lista *l)
 {
     Lista *novo = (Lista *)malloc(sizeof(Lista));
@@ -266,16 +261,14 @@ Lista *inserirNoFinal(Lista *l)
 
     return l;
 }
-
+// funcão para inicializar - operante
 Lista *criarLista()
 {
-    Lista *l = (Lista *)malloc(sizeof(Lista));
-    l->pessoa = NULL;
-    l->prox = NULL;
+    Lista *l = NULL;
 
     return l;
 }
-
+// imprime o menu - operante
 int menu(int opc)
 {
     printf("1 - Inserir uma pessoa\n");
@@ -289,7 +282,7 @@ int menu(int opc)
 
     return opc;
 }
-
+// main
 int main(){
 
     int opc;
