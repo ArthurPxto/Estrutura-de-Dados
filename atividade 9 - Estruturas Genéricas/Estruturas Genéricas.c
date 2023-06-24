@@ -27,7 +27,7 @@ typedef struct discente
 
 typedef struct humano
 {
-    int tipo; // 1 = professor, 2 = aluno
+    int tipo;        // 1 = professor, 2 = aluno
     void *profissao; // ponteiro para professor ou aluno
 
 } humano;
@@ -39,12 +39,15 @@ typedef struct lista
 
 } Lista;
 
-
-int *ordenarVetor(int *vet, int tam){
+int *ordenarVetor(int *vet, int tam)
+{
     int i, j, aux;
-    for(i = 0; i < tam; i++){
-        for(j = i+1; j < tam; j++){
-            if(vet[i] < vet[j]){
+    for (i = 0; i < tam; i++)
+    {
+        for (j = i + 1; j < tam; j++)
+        {
+            if (vet[i] < vet[j])
+            {
                 aux = vet[i];
                 vet[i] = vet[j];
                 vet[j] = aux;
@@ -56,12 +59,12 @@ int *ordenarVetor(int *vet, int tam){
 // imprime a profissao - operante
 void verificaProfissao(humano *x)
 {
-    
+
     professor *p;
 
     if (x->tipo == 1)
     {
-        p = (professor *) x->profissao;
+        p = (professor *)x->profissao;
 
         printf("\nProfessor\n");
         printf("Nome: %s\n", p->nome);
@@ -71,7 +74,7 @@ void verificaProfissao(humano *x)
     else
     {
         printf("\nAluno\n");
-        aluno *a = (aluno *) x->profissao;
+        aluno *a = (aluno *)x->profissao;
         printf("Nome: %s\n", a->nome);
         printf("Matricula: %d\n", a->matricula);
         printf("Ano de Ingresso: %d\n", a->anoIngresso);
@@ -79,13 +82,15 @@ void verificaProfissao(humano *x)
     }
 }
 // verifica o curso do aluno e imprime - implementação
-void contarNumeroAlunos(Lista *l){
+void contarNumeroAlunos(Lista *l)
+{
 
     int count = 0;
     char curso[50];
     Lista *aux = l;
 
-    if(aux == NULL){
+    if (aux == NULL)
+    {
         printf("lista vazia\n");
         return;
     }
@@ -100,27 +105,30 @@ void contarNumeroAlunos(Lista *l){
     {
         h = aux->pessoa;
 
-        if(h->tipo == 2){
+        if (h->tipo == 2)
+        {
             a = h->profissao;
-            if(strcmp(curso,a->curso) == 0){
+            if (strcmp(curso, a->curso) == 0)
+            {
                 count++;
                 printf("\naluno do curso %s numero %d\n", curso, count);
                 verificaProfissao(h);
-                
             }
         }
         aux = aux->prox;
     }
-    if(count == 0)
+    if (count == 0)
         printf("\nO curso %s nao tem pessoas inscritas\n", curso);
     else
         printf("\nO curso %s tem %d alunos inscritos\n", curso, count);
 }
 // imprime a lista - operante
-void imprimirLista(Lista *l){
+void imprimirLista(Lista *l)
+{
     Lista *aux = l;
 
-    if(aux->pessoa == NULL){
+    if (aux->pessoa == NULL)
+    {
         printf("Lista vazia\n");
         return;
     }
@@ -130,16 +138,20 @@ void imprimirLista(Lista *l){
     aluno *a;
 
     printf(" \n--------- imprimindo lista -----------\n");
-    while(aux != NULL){
+    while (aux != NULL)
+    {
         x = aux->pessoa;
         printf("Tipo: %d\n", x->tipo);
-        if(x->tipo == 1){
-            p = (professor *) x->profissao;
+        if (x->tipo == 1)
+        {
+            p = (professor *)x->profissao;
             printf("Nome: %s\n", p->nome);
             printf("Matricula: %d\n", p->matricula);
             printf("Salario: %d\n", p->salario);
-        }else{
-            a = (aluno *) x->profissao;
+        }
+        else
+        {
+            a = (aluno *)x->profissao;
             printf("Nome: %s\n", a->nome);
             printf("Matricula: %d\n", a->matricula);
             printf("Ano de Ingresso: %d\n", a->anoIngresso);
@@ -151,32 +163,39 @@ void imprimirLista(Lista *l){
     printf(" \n--------- fim da lista -----------\n");
 }
 // busca as pessoas - operante
-void buscarPessoa(Lista *l){
-       
+void buscarPessoa(Lista *l)
+{
+
     Lista *aux = l;
     int matricula, printou = 0;
 
     printf("Informe a matricula da pessoa que deseja buscar: ");
     scanf("%d", &matricula);
 
-    while(aux != NULL){
+    while (aux != NULL)
+    {
 
         humano *x = aux->pessoa;
         professor *p;
         aluno *a;
 
-        if(x->tipo == 1){
+        if (x->tipo == 1)
+        {
 
-            p = (professor *) x->profissao;
-            if(p->matricula == matricula){
+            p = (professor *)x->profissao;
+            if (p->matricula == matricula)
+            {
                 printou = 1;
                 verificaProfissao(x);
                 break;
             }
-        }else{
+        }
+        else
+        {
 
-            a = (aluno *) x->profissao;
-            if(a->matricula == matricula){
+            a = (aluno *)x->profissao;
+            if (a->matricula == matricula)
+            {
                 printou = 1;
                 verificaProfissao(x);
                 break;
@@ -186,38 +205,43 @@ void buscarPessoa(Lista *l){
         aux = aux->prox;
     }
 
-    if(printou == 0)
+    if (printou == 0)
         printf("Pessoa nao encontrada\n");
 }
 // função pra imprimir salarios dos professores
-void imprimirProfessores(Lista *l){
-    
+void imprimirProfessores(Lista *l)
+{
+
     Lista *aux = l;
     int count = 0;
 
-    if(aux == NULL){
+    if (aux == NULL)
+    {
         printf("Lista vazia\n");
         return;
     }
 
-    humano *x = (humano *) malloc(sizeof(humano));
-    
-    while(aux != NULL){
+    humano *x = (humano *)malloc(sizeof(humano));
+
+    while (aux != NULL)
+    {
         x = aux->pessoa;
-        if(x->tipo == 1){
+        if (x->tipo == 1)
+        {
             count++;
         }
         aux = aux->prox;
     }
     printf(" \n Existem %d professores\n", count);
-
 }
 // função para remover uma pessoa - operante
-Lista *removerLista(Lista *l){
+Lista *removerLista(Lista *l)
+{
     Lista *aux = l;
     Lista *ant = NULL;
 
-    if(aux == NULL){
+    if (aux == NULL)
+    {
         printf("Lista vazia\n");
         return l;
     }
@@ -230,35 +254,45 @@ Lista *removerLista(Lista *l){
     professor *p;
     aluno *a;
 
-    while(aux != NULL){
-        
+    while (aux != NULL)
+    {
+
         x = aux->pessoa;
 
-        if(x->tipo == 1){
-            p = (professor *) x->profissao;
-            if(p->matricula == matricula){
+        if (x->tipo == 1)
+        {
+            p = (professor *)x->profissao;
+            if (p->matricula == matricula)
+            {
                 printf("Professor removido\n");
                 break;
             }
-        }else{
-            a = (aluno *) x->profissao;
-            if(a->matricula == matricula){
+        }
+        else
+        {
+            a = (aluno *)x->profissao;
+            if (a->matricula == matricula)
+            {
                 printf("Aluno removido\n");
                 break;
+            }
+
+            ant = aux;
+            aux = aux->prox;
         }
-
-        ant = aux;
-        aux = aux->prox;
-    }
     }
 
-    if(aux == NULL){
+    if (aux == NULL)
+    {
         printf("Pessoa nao encontrada\n");
         return l;
     }
-    else if(ant == NULL){
+    else if (ant == NULL)
+    {
         l = aux->prox;
-    }else{
+    }
+    else
+    {
         ant->prox = aux->prox;
     }
 
@@ -266,7 +300,6 @@ Lista *removerLista(Lista *l){
 
     free(aux);
     return l;
-
 }
 // funcão para criar uma pessoa - operante
 humano *criarPessoa()
@@ -278,15 +311,15 @@ humano *criarPessoa()
     printf("Informe o tipo de pessoa: ");
     scanf("%d", &tipo);
 
-    humano *h = (humano *) malloc(sizeof(humano)); 
-    professor *p = (professor *) malloc(sizeof(professor));
-    aluno *a = (aluno *) malloc(sizeof(aluno));
-    
+    humano *h = (humano *)malloc(sizeof(humano));
+    professor *p = (professor *)malloc(sizeof(professor));
+    aluno *a = (aluno *)malloc(sizeof(aluno));
+
     h->tipo = tipo;
 
-    if(tipo == 1)
+    if (tipo == 1)
     {
-        
+
         printf("Informe o nome do professor: ");
         scanf("%s", p->nome);
         printf("Informe a matricula do professor: ");
@@ -294,10 +327,9 @@ humano *criarPessoa()
         printf("Informe o salario do professor: ");
         scanf("%d", &p->salario);
 
-        h->profissao = (professor *) p;
-
+        h->profissao = (professor *)p;
     }
-    else if(tipo == 2)
+    else if (tipo == 2)
     {
 
         printf("Informe o nome do aluno: ");
@@ -309,8 +341,7 @@ humano *criarPessoa()
         printf("Informe o curso do aluno: ");
         scanf("%s", a->curso);
 
-        h->profissao = (aluno *) a;
-    
+        h->profissao = (aluno *)a;
     }
 
     return h;
@@ -322,7 +353,7 @@ Lista *inserirNoFinal(Lista *l)
     novo->pessoa = criarPessoa();
     novo->prox = NULL;
 
-    if(l == NULL)
+    if (l == NULL)
     {
         printf("Lista vazia, inserindo no inicio\n");
         l = novo;
@@ -330,7 +361,7 @@ Lista *inserirNoFinal(Lista *l)
     else
     {
         Lista *aux = l;
-        while(aux->prox != NULL)
+        while (aux->prox != NULL)
         {
             aux = aux->prox;
         }
@@ -363,48 +394,51 @@ int menu(int opc)
     return opc;
 }
 // main
-int main(){
+int main()
+{
 
     int opc;
 
     Lista *l = criarLista();
 
-    while(1){
+    while (1)
+    {
         opc = menu(opc);
 
-        switch(opc){
-            case 1:
+        switch (opc)
+        {
+        case 1:
 
-                l = inserirNoFinal(l);
+            l = inserirNoFinal(l);
 
-                break;
-            case 2:
+            break;
+        case 2:
 
-                l = removerLista(l);
+            l = removerLista(l);
 
-                break;
-            case 3:
-                
-                buscarPessoa(l);
+            break;
+        case 3:
 
-                break;
-            case 4: 
+            buscarPessoa(l);
 
-                contarNumeroAlunos(l);
+            break;
+        case 4:
 
-                break;
-            case 5:
+            contarNumeroAlunos(l);
 
-                imprimirProfessores(l);
+            break;
+        case 5:
 
-                break;
-            case 6:
-                printf("Saindo...\n");
-                return 0;
-                break;
-            default:
-                printf("Opcao invalida\n");
-                break;
+            imprimirProfessores(l);
+
+            break;
+        case 6:
+            printf("Saindo...\n");
+            return 0;
+            break;
+        default:
+            printf("Opcao invalida\n");
+            break;
         }
     }
 }

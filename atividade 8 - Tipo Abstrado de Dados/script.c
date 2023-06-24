@@ -8,14 +8,14 @@
 #include <stdio.h>
 #include "fila.h"
 
-//capacidade maxima da fila
+// capacidade maxima da fila
 #define N 5
 
 // declarando a fila
-struct fila {
+struct fila
+{
     int vet[N];
     int top;
-
 };
 
 // limpa a tela
@@ -27,23 +27,23 @@ void limpaTela()
     system("cls");
 }
 
-//libera a fila e retorna NULL
+// libera a fila e retorna NULL
 void liberarFila(Fila f)
 {
     free(f);
 }
 
-//cria a fila com o tamanho do vetor inserido pelo usuario
+// cria a fila com o tamanho do vetor inserido pelo usuario
 Fila criarFila()
 {
-    Fila f = (Fila) malloc(sizeof(struct fila));
+    Fila f = (Fila)malloc(sizeof(struct fila));
 
     f->top = 0;
 
     return f;
 }
 
-//mostra o menu
+// mostra o menu
 int menu(int opc)
 {
     printf("\n\n menu \n\n");
@@ -61,18 +61,18 @@ int menu(int opc)
 void imprimirFila(Fila f)
 {
     printf("Fila:\n");
-    for(int i = 0; i < f->top; i++)
+    for (int i = 0; i < f->top; i++)
     {
         printf("[%d]", f->vet[i]);
     }
     printf("\n");
-
 }
 
 // insere um numero e retorna a fila modificada
 Fila inserirFila(Fila f)
 {
-    if(f->top == N){
+    if (f->top == N)
+    {
         printf("Fila cheia\n");
         return f;
     }
@@ -93,7 +93,8 @@ Fila inserirFila(Fila f)
 // remove um numero e retorna a fila modificada
 Fila removerFila(Fila f)
 {
-    if(f->top == 0){
+    if (f->top == 0)
+    {
         printf("Fila vazia\n");
         return f;
     }
@@ -102,20 +103,17 @@ Fila removerFila(Fila f)
 
     x = f->vet[0];
 
-        printf("elemento %d removido com sucesso\n", x);
-        verificador = 1;
-        for(int j = 0; j < f->top; j++)
-        {
-            f->vet[j] = f->vet[j + 1];
-        }
+    printf("elemento %d removido com sucesso\n", x);
+    verificador = 1;
+    for (int j = 0; j < f->top; j++)
+    {
+        f->vet[j] = f->vet[j + 1];
+    }
 
-  
-
-
-    if(verificador == 0)
+    if (verificador == 0)
         printf("elemento %d nao encontrado\n", x);
     else
         f->top--;
-    
+
     return f;
 }
