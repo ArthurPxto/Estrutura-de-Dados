@@ -18,15 +18,6 @@ struct fila
     int top;
 };
 
-// limpa a tela
-void limpaTela()
-{
-    fflush(stdin);
-    printf("\n aperte um enter para continuar...");
-    getchar();
-    system("cls");
-}
-
 // libera a fila e retorna NULL
 void liberarFila(Fila f)
 {
@@ -41,20 +32,6 @@ Fila criarFila()
     f->top = 0;
 
     return f;
-}
-
-// mostra o menu
-int menu(int opc)
-{
-    printf("\n\n menu \n\n");
-    printf("1 - Inserir\n");
-    printf("2 - Remover\n");
-    printf("3 - Printar\n");
-    printf("4 - Sair\n");
-    printf("Opcao: ");
-    scanf("%d", &opc);
-
-    return opc;
 }
 
 // imprime a fila na tela

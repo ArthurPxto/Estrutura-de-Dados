@@ -235,70 +235,53 @@ void imprimirProfessores(Lista *l)
     printf(" \n Existem %d professores\n", count);
 }
 // função para remover uma pessoa - operante
-Lista *removerLista(Lista *l)
+Lista *removerLista(Lista *l, int matricula)
 {
-    Lista *aux = l;
-    Lista *ant = NULL;
-
-    if (aux == NULL)
+    if (l == NULL)
     {
         printf("Lista vazia\n");
         return l;
     }
 
-    int matricula;
-    printf("Informe a matricula da pessoa que deseja remover: ");
-    scanf("%d", &matricula);
-
-    humano *x = aux->pessoa;
+    humano *x;
     professor *p;
     aluno *a;
 
-    while (aux != NULL)
+    x = l->pessoa;
+
+    if (x->tipo == 1)
     {
-
-        x = aux->pessoa;
-
-        if (x->tipo == 1)
+        p = (professor *)x->profissao;
+        if (p->matricula == matricula)
         {
-            p = (professor *)x->profissao;
-            if (p->matricula == matricula)
-            {
-                printf("Professor removido\n");
-                break;
-            }
+            printf("Professor removido\n");
+            Lista *aux = l;
+            l = l->prox;
+            free(aux);
         }
         else
         {
-            a = (aluno *)x->profissao;
-            if (a->matricula == matricula)
-            {
-                printf("Aluno removido\n");
-                break;
-            }
-
-            ant = aux;
-            aux = aux->prox;
+            l->prox = removerLista(l->prox, matricula);
         }
     }
-
-    if (aux == NULL)
+    else if (x->tipo == 2)
     {
-        printf("Pessoa nao encontrada\n");
-        return l;
-    }
-    else if (ant == NULL)
-    {
-        l = aux->prox;
-    }
-    else
-    {
-        ant->prox = aux->prox;
+        a = (aluno *)x->profissao;
+        if (a->matricula == matricula)
+        {
+            printf("Aluno removido\n");
+            Lista *aux = l;
+            l = l->prox;
+            free(aux);
+        }
+        else
+        {
+            l->prox = removerLista(l->prox, matricula);
+        }
     }
 
     imprimirLista(l);
 
-    free(aux);
     return l;
 }
 // funcão para criar uma pessoa - operante
@@ -413,10 +396,13 @@ int main()
 
             break;
         case 2:
-
-            l = removerLista(l);
-
+        {
+            int matricula;
+            printf("Informe a matricula da pessoa que deseja remover: ");
+            scanf("%d", &matricula);
+            l = removerLista(l, matricula);
             break;
+        }
         case 3:
 
             buscarPessoa(l);

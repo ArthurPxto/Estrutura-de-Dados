@@ -6,8 +6,7 @@
 
 #ifndef fila_h
 #define fila_h
-//mostra o menu
-int menu(int opc);
+
 // scruct da fila com top e vet
 typedef struct fila *Fila;
 // cria a fila com o tamanho do vetor inserido pelo usuario
@@ -20,7 +19,6 @@ Fila inserirFila(Fila f);
 Fila removerFila(Fila f);
 // libera a fila e retorna NULL
 void liberarFila(Fila f);
-// limpa a tela
-void limpaTela();
+
 
 #endif
