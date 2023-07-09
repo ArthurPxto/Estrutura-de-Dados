@@ -4,16 +4,16 @@
 
 typedef struct Motocicleta
 {
-    int placa, ano;
-    char modelo[20];
-    char marca[20];
+    int placa, ano, cilindrada;
+    char modelo[40];
+    char marca[40];
 } moto;
 
 typedef struct Carro
 {
-    int placa, ano;
-    char modelo[20];
-    char marca[20];
+    int placa, ano, nPortas;
+    char modelo[40];
+    char marca[40];
 
 } carro;
 
@@ -25,13 +25,14 @@ int menu()
     printf("3 - Retornar elemento\n");
     printf("4 - Calcular altura\n");
     printf("5 - Imprimir largura\n");
-    printf("6 - Sair\n");
+    printf("6 - Imprimir largura\n");
+    printf("7 - Sair\n");
     printf("Digite a opcao desejada: ");
     scanf("%d", &op);
     return op;
 }
 
-void *veiculo()
+void *veiculo(int *chave)
 {
     int op;
     void *info;
@@ -46,7 +47,8 @@ void *veiculo()
         carro *c = (carro *)malloc(sizeof(carro));
 
         printf("Digite a placa: ");
-        scanf("%d", &c->placa);
+        scanf("%d", chave);
+        c->placa = *chave;
         printf("Digite o ano: ");
         scanf("%d", &c->ano);
         printf("Digite o modelo: ");
@@ -63,7 +65,8 @@ void *veiculo()
     {
         moto *m = (moto *)malloc(sizeof(moto));
         printf("Digite a placa: ");
-        scanf("%d", &m->placa);
+        scanf("%d", chave);
+        m->placa = *chave;
         printf("Digite o ano: ");
         scanf("%d", &m->ano);
         printf("Digite o modelo: ");
@@ -91,17 +94,21 @@ int main()
         {
         case 1:
         {
-            int chave;
+            int chavePai;
             char direcao;
             void *info;
-            printf("Digite a chave: ");
-            scanf("%d", &chave);
+            int chave;
+
+            printf("Digite a chave do no Pai de onde deseja salvar: ");
+            scanf("%d", &chavePai);
             printf("Digite a direcao: ");
             scanf(" %c", &direcao);
 
-            info = veiculo();
+            info = veiculo(&chave);
 
-            a = inserir(a, chave, direcao, info);
+            printf("teste da chave/placa na main: %d\n", chave);
+
+            a = inserir(a, chave, chavePai, direcao, info);
 
             break;
         }
@@ -120,11 +127,50 @@ int main()
             }
             break;
         }
+        case 3:
+        {
+            int chave;
+            printf("Digite a chave: ");
+            scanf("%d", &chave);
+            void *info = retornarElemento(a, chave, info);
+            if (info != NULL)
+            {
+                carro *c = (carro *)info;
+                printf("Placa: %d\n", c->placa);
+                printf("Ano: %d\n", c->ano);
+                printf("Modelo: %s\n", c->modelo);
+                printf("Marca: %s\n", c->marca);
+            }
+            else
+            {
+                printf("Nao existe\n");
+            }
+            break;
+        }
         case 4:
         {
             printf("Altura: %d\n", calcularAltura(a));
             break;
         }
+        case 5:
+        {
+            int alturaDesejada;
+            printf("Digite a altura desejada: ");
+            scanf("%d", &alturaDesejada);
+            imprimirLargura(a, alturaDesejada);
+            break;
+        }
+        case 6:
+        {
+            imprimirArvore(a);
+            break;
+        }
+        case 7:
+          {
+            a = liberarArvore(a);
+            exit(0);
+            break;
+          }
         default:
             break;
         }

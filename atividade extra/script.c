@@ -11,13 +11,77 @@ struct arvore
     struct arvore *dir;
 };
 
-Arvore inserir(Arvore a, int chave, char direção, void *info)
+
+
+Arvore buscarElemento(Arvore a, int x)
 {
+    if (a == NULL)
+    {
+        return NULL;
+    }
+    else
+    {
+        if (a->chave == x)
+        {
+            return a;
+        }
+        else
+        {
+            Arvore tempEsquerda = buscarElemento(a->esq, x);
+            if (tempEsquerda != NULL) {
+               return tempEsquerda;
+            } else {
+               return buscarElemento(a->dir, x);
+            }
+        }
+    }
+}
+
+void *retornarElemento(Arvore a, int x, void *info)
+{
+    if(verificarSeExiste(a,x))
+    {
+        Arvore aux = buscarElemento(a,x);
+        printf("O elemento é: %d", aux->chave);
+        void *retorno = aux->info;
+        return retorno;
+    }
+
+}
+
+Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info)
+{
+
     if(a->chave == -1){
         a->chave = chave;
         a->info = info;
         return a;
     }
+
+   Arvore noPai = buscarElemento(a, chavePai);
+
+   if (noPai == NULL)
+   {
+      printf("Nao existe no com a chave %d\n", chavePai);
+      return a;
+   }
+
+   if (direcao == 'e') {
+      if (noPai->esq != NULL) {
+         printf("Ja existe um no a esquerda do no com a chave %d\n", chavePai);
+         return a;
+      }
+   } else if (direcao == 'd') { 
+      if (noPai->dir != NULL) {
+         printf("Ja existe um no a direita do no com a chave %d\n", chavePai);
+         return a;
+      } 
+
+   } else {
+      printf("Direcao invalida!\n");
+      return a;
+   } 
+
     if (a == NULL)
     {
         a = (Arvore)malloc(sizeof(Arvore));
@@ -25,17 +89,22 @@ Arvore inserir(Arvore a, int chave, char direção, void *info)
         a->info = info;
         a->esq = NULL;
         a->dir = NULL;
-    }
-    else
-    {
-        if (direção == 'e')
-        {
-            a->esq = inserir(a->esq, chave, direção, info);
-        }
-        else
-        {
-            a->dir = inserir(a->dir, chave, direção, info);
-        }
+    }    else  {
+         char resposta;
+        printf("Ja existe um no com a chave %d\nDeseja Inserir em uma nova posicao ? (S/N)", chavePai);
+        scanf("%c", &resposta);
+         if (resposta == 'S' || resposta == 's')
+         {
+               printf("Digite a nova chave: ");
+               scanf("%d", &chavePai);
+               printf("Digite a nova direcao: ");
+               scanf("%c", &direcao);
+               inserir(a, chave, chavePai, direcao, info);
+         }
+         else
+         {
+               return a;
+         }
     }
     return a;
 }
@@ -58,8 +127,8 @@ int calcularAltura(Arvore a)
         return 0;
     else
     {
-        he = altura(a->esq);
-        hd = altura(a->dir);
+        he = calcularAltura(a->esq);
+        hd = calcularAltura(a->dir);
         if (he > hd)
             return he + 1;
         else
@@ -77,17 +146,29 @@ void imprimirLargura(Arvore a, int noDesejado)
         }
         else
         {
-            ImprimirLargura(a->esq, noDesejado - 1);
-            ImprimirLargura(a->dir, noDesejado - 1);
+            imprimirLargura(a->esq, noDesejado - 1);
+            imprimirLargura(a->dir, noDesejado - 1);
         }
     }
+}
+
+void imprimirArvore(Arvore a)
+{
+   int altura = calcularAltura(a);
+   int i;
+   for (i = 0; i < altura; i++)
+   {
+      printf("Nivel %d: ", i);
+      imprimirLargura(a, i);
+      printf("\n");
+   }
 }
 
 Arvore liberarArvore(Arvore a)
 {
   if (a != NULL) {
-    Libera(a->esq);
-    Libera(a->dir);
+    liberarArvore(a->esq);
+    liberarArvore(a->dir);
     free(a);
   }
   return NULL;
@@ -108,37 +189,6 @@ int verificarSeExiste(Arvore a, int x)
         else
         {
             return verificarSeExiste(a->esq, x) || verificarSeExiste(a->dir, x);
-        }
-    }
-}
-
-void *retornarElemento(Arvore a, int x, void *info)
-{
-    if(verificarSeExiste(a,x))
-    {
-        Arvore aux = buscarElemento(a,x);
-        printf("O elemento é: %d", aux->chave);
-        void *retorno = aux->info;
-        return retorno;
-    }
-
-}
-
-Arvore buscarElemento(Arvore a, int x)
-{
-    if (a == NULL)
-    {
-        return NULL;
-    }
-    else
-    {
-        if (a->chave == x)
-        {
-            return a;
-        }
-        else
-        {
-            return buscarElemento(a->esq, x) || buscarElemento(a->dir, x);
         }
     }
 }

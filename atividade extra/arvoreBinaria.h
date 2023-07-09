@@ -13,6 +13,10 @@ int calcularAltura(Arvore a);
 
 void imprimirLargura(Arvore a, int noDesejado);
 
-Arvore inserir(Arvore a, int chave, char direcao, void *info);
+void imprimirArvore(Arvore a);
+
+Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info);
+
+Arvore liberarArvore(Arvore a);
 
 #endif
