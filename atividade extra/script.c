@@ -49,63 +49,83 @@ void *retornarElemento(Arvore a, int x, void *info)
 
 }
 
+Arvore achaEInsere(Arvore a, int chave, int chavePai, char direcao, void *info) {
+    if (a == NULL) {
+      return a;
+    }
+    if (a->chave == chavePai) {
+      if (direcao == 'e' && a->esq == NULL)  {
+        Arvore b = (Arvore)malloc(sizeof(struct arvore));
+        b->chave = chave;
+        b->info = info;
+        b->dir = NULL;
+        b->esq = NULL;
+        a->esq = b;
+        printf("\nChave inserida: %d", chave);
+        return a;
+      } else if (direcao == 'd' && a->dir == NULL) {
+        Arvore b = (Arvore)malloc(sizeof(struct arvore));
+        b->chave = chave;
+        b->info = info;
+        b->dir = NULL;
+        b->esq = NULL;
+        a->dir = b;
+        printf("\nChave inserida: %d", chave);
+        return a;
+      } else {
+        printf("Posicao ja preenchida!\n");
+      }
+    } else { 
+      a = achaEInsere(a->esq, chave, chavePai, direcao, info);
+      a = achaEInsere(a->dir, chave, chavePai, direcao, info);
+    }
+    return a;
+}
+
 Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info)
 {
-
     if(a->chave == -1){
         a->chave = chave;
         a->info = info;
+        a->dir = NULL;
+        a->esq = NULL;
         return a;
     }
 
-   Arvore noPai = buscarElemento(a, chavePai);
+  if (!(direcao == 'd' || direcao == 'e')) {
+    printf("\nDirecao invalida!\nDeseja inserir uma nova direcao ? (S/N)");
+    char resposta;
+    scanf(" %c", &resposta);
+     if (resposta == 'S' || resposta == 's')
+     {
+         printf("Digite a nova direcao: ");
+         scanf(" %c", &direcao);
+         inserir(a, chave, chavePai, direcao, info);
+     }
+  }
 
-   if (noPai == NULL)
-   {
-      printf("Nao existe no com a chave %d\n", chavePai);
-      return a;
-   }
 
-   if (direcao == 'e') {
-      if (noPai->esq != NULL) {
-         printf("Ja existe um no a esquerda do no com a chave %d\n", chavePai);
-         return a;
-      }
-   } else if (direcao == 'd') { 
-      if (noPai->dir != NULL) {
-         printf("Ja existe um no a direita do no com a chave %d\n", chavePai);
-         return a;
-      } 
+  if (!verificarSeExiste(a, chavePai)) {
+     char resposta;
+    printf("\nNao existe um no com a chave %d\nDeseja Inserir a partir de um novo no Pai ? (S/N)", chavePai);
+    scanf(" %c", &resposta);
+     if (resposta == 'S' || resposta == 's')
+     {
+         printf("Digite a nova chave do no Pai: ");
+         scanf(" %d", &chavePai);
+         inserir(a, chave, chavePai, direcao, info);
+     }
+     else
+     {
+       return a;
+     }
+  }
+  if (verificarSeExiste(a, chave)) {
+    printf("\nJa existe um no com essa chave %d", chave);
+    return a;
+  }
 
-   } else {
-      printf("Direcao invalida!\n");
-      return a;
-   } 
-
-    if (a == NULL)
-    {
-        a = (Arvore)malloc(sizeof(Arvore));
-        a->chave = chave;
-        a->info = info;
-        a->esq = NULL;
-        a->dir = NULL;
-    }    else  {
-         char resposta;
-        printf("Ja existe um no com a chave %d\nDeseja Inserir em uma nova posicao ? (S/N)", chavePai);
-        scanf("%c", &resposta);
-         if (resposta == 'S' || resposta == 's')
-         {
-               printf("Digite a nova chave: ");
-               scanf("%d", &chavePai);
-               printf("Digite a nova direcao: ");
-               scanf("%c", &direcao);
-               inserir(a, chave, chavePai, direcao, info);
-         }
-         else
-         {
-               return a;
-         }
-    }
+    a = achaEInsere(a, chave, chavePai, direcao, info);
     return a;
 }
 
@@ -141,8 +161,8 @@ void imprimirLargura(Arvore a, int noDesejado)
     if (a != NULL)
     {
         if (noDesejado == 0)
-        {
-            printf("[%d]", a->info);
+        {  
+          printf("[%d]", a->chave);
         }
         else
         {

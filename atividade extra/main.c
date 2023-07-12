@@ -20,12 +20,12 @@ typedef struct Carro
 int menu()
 {
     int op;
-    printf("1 - Inserir\n");
+    printf("\n1 - Inserir\n");
     printf("2 - Verificar se existe\n");
     printf("3 - Retornar elemento\n");
     printf("4 - Calcular altura\n");
     printf("5 - Imprimir largura\n");
-    printf("6 - Imprimir largura\n");
+    printf("6 - Imprimir arvore inteira\n");
     printf("7 - Sair\n");
     printf("Digite a opcao desejada: ");
     scanf("%d", &op);
@@ -51,10 +51,12 @@ void *veiculo(int *chave)
         c->placa = *chave;
         printf("Digite o ano: ");
         scanf("%d", &c->ano);
-        printf("Digite o modelo: ");
-        scanf("%s", c->modelo);
         printf("Digite a marca: ");
         scanf("%s", c->marca);
+        printf("Digite o modelo: ");
+        scanf("%s", c->modelo);
+        printf("Digite o numero de portas: ");
+        scanf("%d", &c->nPortas);
 
         info = (carro *)c;
 
@@ -69,10 +71,12 @@ void *veiculo(int *chave)
         m->placa = *chave;
         printf("Digite o ano: ");
         scanf("%d", &m->ano);
-        printf("Digite o modelo: ");
-        scanf("%s", m->modelo);
         printf("Digite a marca: ");
         scanf("%s", m->marca);
+        printf("Digite o modelo: ");
+        scanf("%s", m->modelo);
+        printf("Digite a cilindrada do motor: ");
+        scanf("%d", &m->cilindrada);
 
         info = (moto *)m;
 
@@ -105,8 +109,6 @@ int main()
             scanf(" %c", &direcao);
 
             info = veiculo(&chave);
-
-            printf("teste da chave/placa na main: %d\n", chave);
 
             a = inserir(a, chave, chavePai, direcao, info);
 
