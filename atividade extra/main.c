@@ -32,7 +32,7 @@ int menu()
     return op;
 }
 
-void *veiculo(int *chave)
+void *veiculo(int *chave, int *tipo)
 {
     int op;
     void *info;
@@ -44,6 +44,7 @@ void *veiculo(int *chave)
     {
     case 1:
     {
+        *tipo = 1;
         carro *c = (carro *)malloc(sizeof(carro));
 
         printf("Digite a placa: ");
@@ -65,6 +66,7 @@ void *veiculo(int *chave)
     
     case 2:
     {
+        *tipo = 2;
         moto *m = (moto *)malloc(sizeof(moto));
         printf("Digite a placa: ");
         scanf("%d", chave);
@@ -102,15 +104,16 @@ int main()
             char direcao;
             void *info;
             int chave;
+            int tipo;
 
             printf("Digite a chave do no Pai de onde deseja salvar: ");
             scanf("%d", &chavePai);
             printf("Digite a direcao: ");
             scanf(" %c", &direcao);
 
-            info = veiculo(&chave);
+            info = veiculo(&chave, &tipo);
 
-            a = inserir(a, chave, chavePai, direcao, info);
+            a = inserir(a, chave, chavePai, direcao, info, tipo);
 
             break;
         }
@@ -132,16 +135,29 @@ int main()
         case 3:
         {
             int chave;
+            int tipo;
             printf("Digite a chave: ");
             scanf("%d", &chave);
-            void *info = retornarElemento(a, chave, info);
+            void *info = retornarElemento(a, chave, info, &tipo);
             if (info != NULL)
             {
-                carro *c = (carro *)info;
-                printf("Placa: %d\n", c->placa);
-                printf("Ano: %d\n", c->ano);
-                printf("Modelo: %s\n", c->modelo);
-                printf("Marca: %s\n", c->marca);
+                if (tipo == 1) {
+                  carro *c = (carro *)info;
+                  printf("Placa: %d\n", c->placa);
+                  printf("Ano: %d\n", c->ano);
+                  printf("Modelo: %s\n", c->modelo);
+                  printf("Marca: %s\n", c->marca);
+                  printf("Numero de Portas: %d\n", c->nPortas);
+                } else if (tipo == 2) {
+                  moto *m = (moto *)info;
+                  printf("Placa: %d\n", m->placa);
+                  printf("Ano: %d\n", m->ano);
+                  printf("Modelo: %s\n", m->modelo);
+                  printf("Marca: %s\n", m->marca);
+                  printf("Cilindrada: %d\n", m->cilindrada);
+                } else {
+                  printf("\nTipo de dado não existe");
+                }
             }
             else
             {

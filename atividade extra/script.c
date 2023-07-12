@@ -6,12 +6,22 @@
 struct arvore
 {
     int chave;
+    int tipo;
     void *info;
     struct arvore *esq;
     struct arvore *dir;
 };
 
 
+Arvore inicializarArvore()
+{
+    Arvore a = (Arvore)malloc(sizeof(struct arvore));
+    a->esq = NULL;
+    a->dir = NULL;
+    a->chave = -1;
+    a->tipo = 0;
+    return a;
+}
 
 Arvore buscarElemento(Arvore a, int x)
 {
@@ -37,54 +47,58 @@ Arvore buscarElemento(Arvore a, int x)
     }
 }
 
-void *retornarElemento(Arvore a, int x, void *info)
+void *retornarElemento(Arvore a, int x, void *info, int *tipo)
 {
     if(verificarSeExiste(a,x))
     {
         Arvore aux = buscarElemento(a,x);
         printf("O elemento é: %d", aux->chave);
+        *tipo = aux->tipo;
         void *retorno = aux->info;
         return retorno;
     }
 
 }
 
-Arvore achaEInsere(Arvore a, int chave, int chavePai, char direcao, void *info) {
+Arvore achaEInsere(Arvore a, int chave, int chavePai, char direcao, void *info, int tipo) {
     if (a == NULL) {
-      return a;
+        return a;
     }
     if (a->chave == chavePai) {
-      if (direcao == 'e' && a->esq == NULL)  {
-        Arvore b = (Arvore)malloc(sizeof(struct arvore));
-        b->chave = chave;
-        b->info = info;
-        b->dir = NULL;
-        b->esq = NULL;
-        a->esq = b;
-        printf("\nChave inserida: %d", chave);
-      } else if (direcao == 'd' && a->dir == NULL) {
-        Arvore b = (Arvore)malloc(sizeof(struct arvore));
-        b->chave = chave;
-        b->info = info;
-        b->dir = NULL;
-        b->esq = NULL;
-        a->dir = b;
-        printf("\nChave inserida: %d", chave);
-      } else {
-        printf("Posicao ja preenchida!\n");
-      }
+        if (direcao == 'e' && a->esq == NULL)  {
+            Arvore b = (Arvore)malloc(sizeof(struct arvore));
+            b->chave = chave;
+            b->info = info;
+            b->tipo = tipo;
+            b->dir = NULL;
+            b->esq = NULL;
+            a->esq = b;
+            printf("\nChave inserida: %d", chave);
+        } else if (direcao == 'd' && a->dir == NULL) {
+            Arvore b = (Arvore)malloc(sizeof(struct arvore));
+            b->chave = chave;
+            b->info = info;
+            b->tipo = tipo;
+            b->dir = NULL;
+            b->esq = NULL;
+            a->dir = b;
+            printf("\nChave inserida: %d", chave);
+        } else {
+            printf("Posicao ja preenchida!\n");
+        }
     } else { 
-      a->esq = achaEInsere(a->esq, chave, chavePai, direcao, info);
-      a->dir = achaEInsere(a->dir, chave, chavePai, direcao, info);
+        a->esq = achaEInsere(a->esq, chave, chavePai, direcao, info, tipo);
+        a->dir = achaEInsere(a->dir, chave, chavePai, direcao, info, tipo);
     }
     return a;
 }
 
-Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info)
+Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info, int tipo)
 {
     if(a->chave == -1){
         a->chave = chave;
         a->info = info;
+        a->tipo = tipo;
         a->dir = NULL;
         a->esq = NULL;
         return a;
@@ -98,7 +112,7 @@ Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info)
      {
          printf("Digite a nova direcao: ");
          scanf(" %c", &direcao);
-         inserir(a, chave, chavePai, direcao, info);
+         inserir(a, chave, chavePai, direcao, info, tipo);
      }
   }
 
@@ -111,7 +125,7 @@ Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info)
      {
          printf("Digite a nova chave do no Pai: ");
          scanf(" %d", &chavePai);
-         inserir(a, chave, chavePai, direcao, info);
+         inserir(a, chave, chavePai, direcao, info, tipo);
      }
      else
      {
@@ -123,16 +137,7 @@ Arvore inserir(Arvore a, int chave, int chavePai, char direcao, void *info)
     return a;
   }
 
-    a = achaEInsere(a, chave, chavePai, direcao, info);
-    return a;
-}
-
-Arvore inicializarArvore()
-{
-    Arvore a = (Arvore)malloc(sizeof(struct arvore));
-    a->esq = NULL;
-    a->dir = NULL;
-    a->chave = -1;
+   a = achaEInsere(a, chave, chavePai, direcao, info, tipo);
     return a;
 }
 
@@ -182,16 +187,6 @@ void imprimirArvore(Arvore a)
    }
 }
 
-Arvore liberarArvore(Arvore a)
-{
-  if (a != NULL) {
-    liberarArvore(a->esq);
-    liberarArvore(a->dir);
-    free(a);
-  }
-  return NULL;
-}
-
 int verificarSeExiste(Arvore a, int x)
 {
     if (a == NULL)
@@ -209,4 +204,14 @@ int verificarSeExiste(Arvore a, int x)
             return verificarSeExiste(a->esq, x) || verificarSeExiste(a->dir, x);
         }
     }
+}
+
+Arvore liberarArvore(Arvore a)
+{
+  if (a != NULL) {
+    liberarArvore(a->esq);
+    liberarArvore(a->dir);
+    free(a);
+  }
+  return NULL;
 }
