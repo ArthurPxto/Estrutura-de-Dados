@@ -62,7 +62,6 @@ Arvore achaEInsere(Arvore a, int chave, int chavePai, char direcao, void *info) 
         b->esq = NULL;
         a->esq = b;
         printf("\nChave inserida: %d", chave);
-        return a;
       } else if (direcao == 'd' && a->dir == NULL) {
         Arvore b = (Arvore)malloc(sizeof(struct arvore));
         b->chave = chave;
@@ -71,13 +70,12 @@ Arvore achaEInsere(Arvore a, int chave, int chavePai, char direcao, void *info) 
         b->esq = NULL;
         a->dir = b;
         printf("\nChave inserida: %d", chave);
-        return a;
       } else {
         printf("Posicao ja preenchida!\n");
       }
     } else { 
-      a = achaEInsere(a->esq, chave, chavePai, direcao, info);
-      a = achaEInsere(a->dir, chave, chavePai, direcao, info);
+      a->esq = achaEInsere(a->esq, chave, chavePai, direcao, info);
+      a->dir = achaEInsere(a->dir, chave, chavePai, direcao, info);
     }
     return a;
 }
